@@ -37,50 +37,47 @@ public class ConnexionActivity extends AppCompatActivity {
         // Initialisation de la base de données
         db = AppDatabase.getDatabase(getApplicationContext());
 
-        buttonConnexion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = editTextEmailLogin.getText().toString().trim();
-                String motDePasse = editTextMotDePasseLogin.getText().toString().trim();
+        buttonConnexion.setOnClickListener(v -> {
+            String loginInput = editTextEmailLogin.getText().toString().trim(); // Peut être email ou nom d'utilisateur
+            String motDePasse = editTextMotDePasseLogin.getText().toString().trim();
 
-                // Vérifiez que les champs ne sont pas vides
-                if (email.isEmpty() || motDePasse.isEmpty()) {
-                    Toast.makeText(ConnexionActivity.this, "Veuillez remplir tous les champs", Toast.LENGTH_SHORT).show();
-                    return;
+            // Vérifiez que les champs ne sont pas vides
+            if (loginInput.isEmpty() || motDePasse.isEmpty()) {
+                Toast.makeText(ConnexionActivity.this, "Veuillez remplir tous les champs", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Vérifiez si l'utilisateur existe dans la base de données
+            Executors.newSingleThreadExecutor().execute(() -> {
+                Utilisateur utilisateur = null;
+
+                // Vérifie si loginInput est un email ou un nom d'utilisateur
+                if (android.util.Patterns.EMAIL_ADDRESS.matcher(loginInput).matches()) {
+                    utilisateur = db.utilisateurDao().getByEmailAndPassword(loginInput, motDePasse); // Recherche par email
+                } else {
+                    utilisateur = db.utilisateurDao().getByUsernameAndPassword(loginInput, motDePasse); // Recherche par nom d'utilisateur
                 }
 
-                // Vérifiez si l'utilisateur existe dans la base de données
-                Executors.newSingleThreadExecutor().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        final Utilisateur utilisateur = db.utilisateurDao().getByEmail(email);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (utilisateur != null && utilisateur.Mot_de_passe.equals(motDePasse)) {
-                                    saveUserId(utilisateur.ID_Utilisateur);
-                                    Toast.makeText(ConnexionActivity.this, "Connexion réussie", Toast.LENGTH_SHORT).show();
+                final Utilisateur finalUtilisateur = utilisateur;
+                runOnUiThread(() -> {
+                    if (finalUtilisateur != null) {
+                        saveUserId(finalUtilisateur.ID_Utilisateur);
+                        Toast.makeText(ConnexionActivity.this, "Connexion réussie", Toast.LENGTH_SHORT).show();
 
-                                    // Redirection vers MainActivity
-                                    Intent intent = new Intent(ConnexionActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                    finish(); // Ferme l'activité de connexion
-                                } else {
-                                    Toast.makeText(ConnexionActivity.this, "Erreur : utilisateur non trouvé ou mot de passe incorrect", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+                        // Redirection vers MainActivity
+                        Intent intent = new Intent(ConnexionActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish(); // Ferme l'activité de connexion
+                    } else {
+                        Toast.makeText(ConnexionActivity.this, "Email/Nom d'utilisateur ou mot de passe incorrect", Toast.LENGTH_SHORT).show();
                     }
                 });
-            }
+            });
         });
 
-        pageInscription.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ConnexionActivity.this, InscriptionActivity.class);
-                startActivity(intent);
-            }
+        pageInscription.setOnClickListener(v -> {
+            Intent intent = new Intent(ConnexionActivity.this, InscriptionActivity.class);
+            startActivity(intent);
         });
     }
 
