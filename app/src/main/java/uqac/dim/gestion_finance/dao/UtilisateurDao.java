@@ -24,4 +24,9 @@ public interface UtilisateurDao {
     @Query("SELECT * FROM Utilisateur WHERE Email = :email")
     Utilisateur getByEmail(String email);
 
+    @Query("SELECT * FROM Utilisateur WHERE Email = :email AND Mot_de_passe = :password")
+    Utilisateur getByEmailAndPassword(String email, String password);
+
+    @Query("SELECT * FROM Utilisateur WHERE Nom = :username AND Mot_de_passe = :password")
+    Utilisateur getByUsernameAndPassword(String username, String password);
 }

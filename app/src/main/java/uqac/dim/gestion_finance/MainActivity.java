@@ -89,10 +89,10 @@ public class MainActivity extends AppCompatActivity {
             if (itemId == R.id.navigation_home) {
                 return true;
             } else if (itemId == R.id.navigation_transaction) {
-                //Toast.makeText(this, "Navigation vers TransactionActivity", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Navigation vers TransactionActivity", Toast.LENGTH_SHORT).show();
                 return true;
             } else if (itemId == R.id.navigation_budget) {
-                //Toast.makeText(this, "Navigation vers BudgetActivity", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Navigation vers BudgetActivity", Toast.LENGTH_SHORT).show();
                 return true;
             } else if (itemId == R.id.navigation_parametres) {
                 startActivity(new Intent(MainActivity.this, ParametresActivity.class));
