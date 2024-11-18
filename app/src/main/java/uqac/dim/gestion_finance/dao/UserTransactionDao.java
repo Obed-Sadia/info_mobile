@@ -22,6 +22,6 @@ public interface UserTransactionDao { // Mettez à jour le nom de l'interface
     @Query("DELETE FROM UserTransaction") // Mettez à jour le nom de la table
     void deleteAll();
 
-    @Query("SELECT * FROM UserTransaction ORDER BY Date_transaction DESC LIMIT :limit")
-    List<UserTransaction> getRecentTransactions(int limit);
+    @Query("SELECT * FROM Usertransaction WHERE ID_Utilisateur = :userId ORDER BY Date_transaction DESC LIMIT :limit")
+    List<UserTransaction> getRecentTransactions(int userId, int limit);
 }

@@ -141,7 +141,7 @@ public class ParametresActivity extends AppCompatActivity {
                     }
                     runOnUiThread(() -> {
                         Toast.makeText(ParametresActivity.this, "Paramètres sauvegardés", Toast.LENGTH_SHORT).show();
-                        applySettings(parametres);
+                        applyGlobalSettings(parametres);
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -151,7 +151,7 @@ public class ParametresActivity extends AppCompatActivity {
         });
     }
 
-    private void applySettings(Parametres parametres) {
+    private void applyGlobalSettings(Parametres parametres) {
         // Appliquer le mode sombre
         if (parametres.Mode_sombre) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -166,21 +166,24 @@ public class ParametresActivity extends AppCompatActivity {
         config.setLocale(newLocale);
         getResources().updateConfiguration(config, getResources().getDisplayMetrics());
 
-        // Sauvegarder la devise pour une utilisation ultérieure
+        // Sauvegarder la devise pour une utilisation globale
         SharedPreferences prefs = getSharedPreferences("AppSettings", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("CURRENCY", parametres.Devise);
         editor.apply();
 
-        // Appliquer les notifications
+        // Notifier les autres activités du changement de paramètres
+        Intent intent = new Intent("SETTINGS_UPDATED");
+        sendBroadcast(intent);
 
-
-        // Redémarrer l'activité pour appliquer les changements
-        Intent intent = new Intent(this, ParametresActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
+        // Redémarrer l'activité principale pour appliquer les changements
+        Intent mainIntent = new Intent(this, MainActivity.class);
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(mainIntent);
         finish();
     }
+
+
 
     private void updateAccountInfo() {
         Executors.newSingleThreadExecutor().execute(() -> {

@@ -20,6 +20,13 @@
         android:layout_marginStart="8dp"/>
 
     <TextView
+        android:id="@+id/transactionCurrency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_marginStart="4dp"/>
+
+    <TextView
         android:id="@+id/transactionDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
