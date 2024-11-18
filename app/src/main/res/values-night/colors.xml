@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Couleurs de base -->
+    <color name="primary">#90CAF9</color>
+    <color name="primary_variant">#64B5F6</color>
+    <color name="secondary">#FFD54F</color>
+    <color name="secondary_variant">#FFC107</color>
+
+    <!-- Couleurs de fond -->
+    <color name="background">#121212</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="error">#CF6679</color>
+
+    <!-- Couleurs de texte -->
+    <color name="on_primary">#000000</color>
+    <color name="on_secondary">#000000</color>
+    <color name="on_background">#FFFFFF</color>
+    <color name="on_surface">#FFFFFF</color>
+    <color name="on_error">#000000</color>
+
+    <!-- Couleurs supplémentaires -->
+    <color name="divider">#2E2E2E</color>
+    <color name="card_background">#2C2C2C</color>
+    <color name="text_hint">#9E9E9E</color>
+    <color name="icon_tint">#B0B0B0</color>
+
+    <!-- Couleurs spécifiques à l'application -->
+    <color name="income">#81C784</color>
+    <color name="expense">#E57373</color>
+    <color name="savings">#64B5F6</color>
+</resources>

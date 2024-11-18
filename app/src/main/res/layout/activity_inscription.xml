@@ -4,42 +4,52 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="?attr/colorSurface">
 
     <ImageView
         android:id="@+id/imageViewLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/logo"
-        android:layout_marginTop="-30px"
-        android:contentDescription="hjjgjhgj" />
+        android:layout_marginTop="-30dp"
+        android:contentDescription="Logo de l'application" />
 
     <EditText
         android:id="@+id/editTextNom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nom" />
+        android:hint="Nom"
+        android:textColorHint="?attr/colorOnSurfaceVariant"
+        android:textColor="?attr/colorOnSurface"
+        android:backgroundTint="?attr/colorPrimary" />
 
     <EditText
         android:id="@+id/editTextEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        android:hint="Email" />
+        android:hint="Email"
+        android:textColorHint="?attr/colorOnSurfaceVariant"
+        android:textColor="?attr/colorOnSurface"
+        android:backgroundTint="?attr/colorPrimary" />
 
     <EditText
         android:id="@+id/editTextMotDePasse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20px"
+        android:layout_marginBottom="20dp"
         android:hint="Mot de passe"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:textColorHint="?attr/colorOnSurfaceVariant"
+        android:textColor="?attr/colorOnSurface"
+        android:backgroundTint="?attr/colorPrimary" />
 
     <Button
         android:id="@+id/buttonInscription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#2eb2ff"
+        android:backgroundTint="?attr/colorPrimary"
+        android:textColor="?attr/colorOnPrimary"
         android:text="S'inscrire" />
 
     <TextView
@@ -47,9 +57,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=" Se connecter "
-        android:textColor="@android:color/holo_blue_dark"
+        android:textColor="?attr/colorPrimary"
         android:textStyle="bold"
         android:layout_marginTop="16dp"
         android:clickable="true"
-        android:autoLink="web" />
+        android:focusable="true" />
 </LinearLayout>

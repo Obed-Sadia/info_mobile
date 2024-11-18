@@ -1,7 +1,55 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Gestion_Finance" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Couleurs primaires -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryVariant">@color/primary_variant</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+
+        <!-- Couleurs secondaires -->
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryVariant">@color/secondary_variant</item>
+        <item name="colorOnSecondary">@color/on_secondary</item>
+
+        <!-- Couleurs de fond et de surface -->
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnBackground">@color/on_background</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+
+        <!-- Couleur d'erreur -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/on_error</item>
+
+        <!-- Autres personnalisations -->
+        <item name="android:textColor">@color/on_background</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+        <item name="dividerColor">@color/divider</item>
+        <item name="cardBackgroundColor">@color/card_background</item>
+
+        <!-- Personnalisation de la barre de statut et de navigation -->
+        <item name="android:statusBarColor">@color/primary_variant</item>
+        <item name="android:navigationBarColor">@color/primary_variant</item>
+
+        <!-- Désactiver le redimensionnement des fenêtres de dialogue -->
+        <item name="android:windowIsFloating">false</item>
+
+        <!-- Personnalisation des transitions d'activité -->
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="colorControlNormal">?attr/colorOnSurface</item>
+        <item name="android:textColorSecondary">?attr/colorOnSurface</item>
     </style>
 
     <style name="Theme.Gestion_Finance" parent="Base.Theme.Gestion_Finance" />
+
+    <!-- Styles spécifiques pour certains widgets si nécessaire -->
+    <style name="Widget.Gestion_Finance.Button" parent="Widget.Material3.Button">
+        <!-- Personnalisations spécifiques pour les boutons -->
+    </style>
+
+    <style name="Widget.Gestion_Finance.TextView" parent="Widget.MaterialComponents.TextView">
+        <!-- Personnalisations spécifiques pour les TextViews -->
+    </style>
+
+    <!-- Vous pouvez ajouter d'autres styles spécifiques ici -->
 </resources>

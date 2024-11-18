@@ -3,34 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:background="?attr/colorSurface">
 
     <TextView
         android:id="@+id/transactionName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        android:textColor="?attr/colorOnSurface"/>
 
     <TextView
         android:id="@+id/transactionAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:layout_marginStart="8dp"/>
+        android:layout_marginStart="8dp"
+        android:textColor="?attr/colorOnSurface"/>
 
     <TextView
         android:id="@+id/transactionCurrency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:layout_marginStart="4dp"/>
+        android:layout_marginStart="4dp"
+        android:textColor="?attr/colorOnSurface"/>
 
     <TextView
         android:id="@+id/transactionDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:layout_marginStart="8dp"/>
+        android:layout_marginStart="8dp"
+        android:textColor="?android:attr/textColorSecondary"/>
 
 </LinearLayout>

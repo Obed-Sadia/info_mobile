@@ -2,17 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_home"
-
+        android:icon="@drawable/home"
         android:title="Accueil"/>
     <item
         android:id="@+id/navigation_transaction"
-
+        android:icon="@drawable/transaction"
         android:title="Transaction"/>
     <item
         android:id="@+id/navigation_budget"
-
+        android:icon="@drawable/budget"
         android:title="Budget"/>
     <item
         android:id="@+id/navigation_parametres"
+        android:icon="@drawable/parametre"
         android:title="Paramètres"/>
 </menu>
