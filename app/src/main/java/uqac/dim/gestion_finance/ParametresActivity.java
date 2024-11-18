@@ -22,6 +22,7 @@ import uqac.dim.gestion_finance.dao.ParametresDao;
 import uqac.dim.gestion_finance.database.AppDatabase;
 import uqac.dim.gestion_finance.entities.Parametres;
 import uqac.dim.gestion_finance.entities.Utilisateur;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ParametresActivity extends AppCompatActivity {
 
@@ -32,6 +33,7 @@ public class ParametresActivity extends AppCompatActivity {
     private AppDatabase db;
     private ParametresDao parametresDao;
     private int currentUserId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,7 @@ public class ParametresActivity extends AppCompatActivity {
         textViewAccountInfo = findViewById(R.id.textViewAccountInfo);
         textViewAppInfo = findViewById(R.id.textViewAppInfo);
         buttonSaveSettings = findViewById(R.id.buttonSaveSettings);
+
 
         // Initialisation de la base de données
         db = AppDatabase.getDatabase(getApplicationContext());
@@ -182,7 +185,6 @@ public class ParametresActivity extends AppCompatActivity {
         startActivity(mainIntent);
         finish();
     }
-
 
 
     private void updateAccountInfo() {

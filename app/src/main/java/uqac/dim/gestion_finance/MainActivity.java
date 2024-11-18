@@ -86,16 +86,27 @@ public class MainActivity extends AppCompatActivity {
     private void setupNavigation() {
         bottomNavigation.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
+
             if (itemId == R.id.navigation_home) {
+                // Déjà sur MainActivity, aucune action nécessaire
                 return true;
             } else if (itemId == R.id.navigation_transaction) {
-                Toast.makeText(this, "Navigation vers TransactionActivity", Toast.LENGTH_SHORT).show();
+                // Naviguer vers TransactionActivity
+                Intent intent = new Intent(MainActivity.this, TransactionActivity.class);
+                startActivity(intent);
+                finish(); // Terminer MainActivity
                 return true;
             } else if (itemId == R.id.navigation_budget) {
-                Toast.makeText(this, "Navigation vers BudgetActivity", Toast.LENGTH_SHORT).show();
+                // Naviguer vers BudgetActivity
+                Intent intent = new Intent(MainActivity.this, BudgetActivity.class);
+                startActivity(intent);
+                finish(); // Terminer MainActivity
                 return true;
             } else if (itemId == R.id.navigation_parametres) {
-                startActivity(new Intent(MainActivity.this, ParametresActivity.class));
+                // Naviguer vers ParametresActivity
+                Intent intent = new Intent(MainActivity.this, ParametresActivity.class);
+                startActivity(intent);
+                finish(); // Terminer MainActivity
                 return true;
             }
             return false;
@@ -120,7 +131,9 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(settingsReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
         } else {
-            registerReceiver(settingsReceiver, filter);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                registerReceiver(settingsReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+            }
         }
         updateUI();
         Log.d(TAG, "onResume: MainActivity resumed");
