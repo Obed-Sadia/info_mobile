@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -33,6 +34,9 @@ public class ParametresActivity extends AppCompatActivity {
     private AppDatabase db;
     private ParametresDao parametresDao;
     private int currentUserId;
+    private static final String TAG = "ParametresActivity";
+
+    private BottomNavigationView bottomNavigation;
 
 
     @Override
@@ -88,6 +92,8 @@ public class ParametresActivity extends AppCompatActivity {
         // Affichage des informations sur le compte et l'application
         updateAccountInfo();
         updateAppInfo();
+        initializeViews();
+        setupNavigation();
     }
 
     private int getCurrentUserId() {
@@ -216,5 +222,44 @@ public class ParametresActivity extends AppCompatActivity {
             }
         }
         return 0;
+    }
+
+    private void initializeViews() {
+        bottomNavigation = findViewById(R.id.bottomNavigation);
+
+        if (bottomNavigation == null) {
+            Log.e(TAG, "initializeViews: BottomNavigation is null");
+            Toast.makeText(this, "Erreur lors de l'initialisation de l'interface", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+        // Sélectionner l'élément correspondant à BudgetActivity
+        bottomNavigation.setSelectedItemId(R.id.navigation_parametres);
+    }
+
+    private void setupNavigation() {
+        bottomNavigation.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.navigation_home) {
+                Intent intent = new Intent(ParametresActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            } else if (itemId == R.id.navigation_transaction) {
+                Intent intent = new Intent(ParametresActivity.this, TransactionActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            } else if (itemId == R.id.navigation_budget) {
+                Intent intent = new Intent(ParametresActivity.this, BudgetActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            } else if (itemId == R.id.navigation_parametres) {
+                return true;
+            }
+            return false;
+        });
     }
 }

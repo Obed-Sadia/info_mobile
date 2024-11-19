@@ -1,6 +1,7 @@
 package uqac.dim.gestion_finance;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.room.Room;
 
 import android.content.Intent;
@@ -16,6 +17,7 @@ import java.util.concurrent.Executors;
 
 import uqac.dim.gestion_finance.database.AppDatabase;
 import uqac.dim.gestion_finance.entities.Utilisateur;
+import uqac.dim.gestion_finance.entities.Parametres;
 
 public class ConnexionActivity extends AppCompatActivity {
 
@@ -61,13 +63,7 @@ public class ConnexionActivity extends AppCompatActivity {
                 final Utilisateur finalUtilisateur = utilisateur;
                 runOnUiThread(() -> {
                     if (finalUtilisateur != null) {
-                        saveUserId(finalUtilisateur.ID_Utilisateur);
-                        Toast.makeText(ConnexionActivity.this, "Connexion réussie", Toast.LENGTH_SHORT).show();
-
-                        // Redirection vers MainActivity
-                        Intent intent = new Intent(ConnexionActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish(); // Ferme l'activité de connexion
+                        onSuccessfulLogin(finalUtilisateur.ID_Utilisateur);
                     } else {
                         Toast.makeText(ConnexionActivity.this, "Email/Nom d'utilisateur ou mot de passe incorrect", Toast.LENGTH_SHORT).show();
                     }
@@ -81,10 +77,46 @@ public class ConnexionActivity extends AppCompatActivity {
         });
     }
 
+    private void onSuccessfulLogin(int userId) {
+        saveUserId(userId);
+        Toast.makeText(ConnexionActivity.this, "Connexion réussie", Toast.LENGTH_SHORT).show();
+
+        // Appliquer les paramètres de l'utilisateur
+        applyUserSettings(userId);
+
+        // Redirection vers MainActivity
+        Intent intent = new Intent(ConnexionActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish(); // Ferme l'activité de connexion
+    }
+
     private void saveUserId(int userId) {
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("USER_ID", userId);
         editor.apply();
+    }
+
+    private void applyUserSettings(int userId) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            Parametres parametres = db.parametresDao().getByUserId(userId);
+            if (parametres != null) {
+                runOnUiThread(() -> {
+                    // Appliquer le mode sombre
+                    if (parametres.Mode_sombre) {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    } else {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    }
+
+                    // Enregistrer le paramètre du mode sombre dans les SharedPreferences
+                    SharedPreferences prefs = getSharedPreferences("AppSettings", MODE_PRIVATE);
+                    prefs.edit().putBoolean("DARK_MODE", parametres.Mode_sombre).apply();
+
+                    // Vous pouvez également appliquer d'autres paramètres ici si nécessaire
+                    // Par exemple, la langue, la devise, etc.
+                });
+            }
+        });
     }
 }

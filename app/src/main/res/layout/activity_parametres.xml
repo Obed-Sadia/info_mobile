@@ -1,125 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorSurface">
 
-    <LinearLayout
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorSurface">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Paramètres"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Langue -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Langue"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"/>
+
+            <Spinner
+                android:id="@+id/spinnerLanguage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:popupBackground="?attr/colorSurface"/>
+
+            <!-- Devise -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Devises"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"/>
+
+            <Spinner
+                android:id="@+id/spinnerCurrency"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:popupBackground="?attr/colorSurface"/>
+
+            <!-- Notifications -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Notifications"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"/>
+
+            <Switch
+                android:id="@+id/switchNotifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Activer les notifications"
+                android:textColor="?attr/colorOnSurface"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Mode sombre -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Apparence"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"/>
+
+            <Switch
+                android:id="@+id/switchDarkMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mode sombre"
+                android:textColor="?attr/colorOnSurface"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Informations sur le compte -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Informations sur le compte"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"/>
+
+            <TextView
+                android:id="@+id/textViewAccountInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurface"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Informations sur l'application -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="À propos de l'application"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"/>
+
+            <TextView
+                android:id="@+id/textViewAppInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurface"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Bouton de sauvegarde -->
+            <Button
+                android:id="@+id/buttonSaveSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sauvegarder les paramètres"
+                android:backgroundTint="?attr/colorPrimary"
+                android:textColor="?attr/colorOnPrimary"/>
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:background="?attr/colorSurface"
+        app:itemIconTint="@color/bottom_nav_item_color"
+        app:itemTextColor="@color/bottom_nav_item_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:menu="@menu/menu" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Paramètres"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Langue -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Langue"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"/>
-
-        <Spinner
-            android:id="@+id/spinnerLanguage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:popupBackground="?attr/colorSurface"/>
-
-        <!-- Devise -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Devises"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"/>
-
-        <Spinner
-            android:id="@+id/spinnerCurrency"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:popupBackground="?attr/colorSurface"/>
-
-        <!-- Notifications -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Notifications"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"/>
-
-        <Switch
-            android:id="@+id/switchNotifications"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Activer les notifications"
-            android:textColor="?attr/colorOnSurface"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Mode sombre -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Apparence"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"/>
-
-        <Switch
-            android:id="@+id/switchDarkMode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Mode sombre"
-            android:textColor="?attr/colorOnSurface"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Informations sur le compte -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Informations sur le compte"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"/>
-
-        <TextView
-            android:id="@+id/textViewAccountInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="?attr/colorOnSurface"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Informations sur l'application -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="À propos de l'application"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"/>
-
-        <TextView
-            android:id="@+id/textViewAppInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="?attr/colorOnSurface"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- Bouton de sauvegarde -->
-        <Button
-            android:id="@+id/buttonSaveSettings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sauvegarder les paramètres"
-            android:backgroundTint="?attr/colorPrimary"
-            android:textColor="?attr/colorOnPrimary"/>
-
-    </LinearLayout>
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
