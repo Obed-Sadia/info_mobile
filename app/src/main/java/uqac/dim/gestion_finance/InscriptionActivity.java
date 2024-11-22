@@ -59,7 +59,17 @@ public class InscriptionActivity extends AppCompatActivity {
                     nouvelUtilisateur.Mot_de_passe = motDePasse;
 
                     db.utilisateurDao().insert(nouvelUtilisateur);
-                    runOnUiThread(() -> Toast.makeText(InscriptionActivity.this, getString(R.string.registration_success), Toast.LENGTH_SHORT).show());
+
+                    runOnUiThread(() -> {
+                        Toast.makeText(InscriptionActivity.this, getString(R.string.registration_success), Toast.LENGTH_SHORT).show();
+
+                        // Rediriger vers l'activité de connexion
+                        Intent intent = new Intent(InscriptionActivity.this, ConnexionActivity.class);
+                        startActivity(intent);
+
+                        // Fermez cette activité pour éviter un retour via le bouton "Back"
+                        finish();
+                    });
                 }
             }).start();
         });

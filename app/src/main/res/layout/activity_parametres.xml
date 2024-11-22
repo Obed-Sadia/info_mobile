@@ -132,24 +132,24 @@
                 <Button
                     android:id="@+id/buttonSaveSettings"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
                     android:layout_weight="1"
                     android:backgroundTint="?attr/colorPrimary"
                     android:textColor="?attr/colorOnPrimary"
                     android:text="@string/sauvegarder_parametres" />
 
                 <View
-                    android:layout_width="16dp"
+                    android:layout_width="24dp"
                     android:layout_height="wrap_content" />
 
                 <Button
                     android:id="@+id/buttonLogout"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="56dp"
                     android:layout_weight="1"
                     android:backgroundTint="?attr/colorPrimary"
-                    android:textColor="?attr/colorOnPrimary"
-                    android:text="@string/logout_button" />
+                    android:text="@string/logout_button"
+                    android:textColor="?attr/colorOnPrimary" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
