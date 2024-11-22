@@ -84,10 +84,14 @@ public class ConnexionActivity extends AppCompatActivity {
     private void onSuccessfulLogin(int userId) {
         String token = java.util.UUID.randomUUID().toString();
         long currentTime = System.currentTimeMillis();
+        Log.d(TAG, "onSuccessfulLogin: Generating new token for userId: " + userId);
 
         Executors.newSingleThreadExecutor().execute(() -> {
             db.sessionTokenDao().deleteExpiredTokens(currentTime - TOKEN_VALIDITY_DURATION);
+            Log.d(TAG, "onSuccessfulLogin: Deleted expired tokens.");
+
             db.sessionTokenDao().deleteTokenByUserId(userId);
+            Log.d(TAG, "onSuccessfulLogin: Deleted any existing token for userId: " + userId);
 
             SessionToken sessionToken = new SessionToken();
             sessionToken.userId = userId;
@@ -95,15 +99,57 @@ public class ConnexionActivity extends AppCompatActivity {
             sessionToken.timestamp = currentTime;
 
             db.sessionTokenDao().insert(sessionToken);
+            Log.d(TAG, "onSuccessfulLogin: New token inserted for userId: " + userId + ", token: " + token);
         });
 
         saveUserId(userId);
+        Log.d(TAG, "onSuccessfulLogin: UserId saved in SharedPreferences.");
 
         // Rediriger vers la MainActivity
         Snackbar.make(findViewById(android.R.id.content), getString(R.string.login_success), Snackbar.LENGTH_SHORT).show();
         Intent intent = new Intent(ConnexionActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                int userId = getLastUserId();
+                if (userId != -1) {
+                    Log.d(TAG, "onStart: Found userId: " + userId);
+
+                    long currentTime = System.currentTimeMillis();
+                    SessionToken sessionToken = db.sessionTokenDao().getTokenByUserId(userId);
+
+                    if (sessionToken != null) {
+                        long tokenAge = currentTime - sessionToken.timestamp;
+                        Log.d(TAG, "onStart: Token found for userId: " + userId + ", token age: " + tokenAge + "ms");
+
+                        if (tokenAge < TOKEN_VALIDITY_DURATION) {
+                            Log.d(TAG, "onStart: Token is still valid. Redirecting to MainActivity.");
+                            runOnUiThread(() -> {
+                                Intent intent = new Intent(ConnexionActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            });
+                        } else {
+                            Log.w(TAG, "onStart: Token expired for userId: " + userId + ". Deleting expired token.");
+                            db.sessionTokenDao().deleteTokenByUserId(userId);
+                        }
+                    } else {
+                        Log.w(TAG, "onStart: No token found for userId: " + userId);
+                    }
+                } else {
+                    Log.d(TAG, "onStart: No userId found in SharedPreferences.");
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "onStart: Error occurred while processing token.", e);
+            }
+        });
     }
 
     private void showErrorDialog(String title, String message) {

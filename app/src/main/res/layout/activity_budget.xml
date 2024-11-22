@@ -6,16 +6,17 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface">
 
-    <!-- Ajoutez ici vos vues pour l'écran de budget -->
-    <TextView
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddBudget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Écran de Budget"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="24sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:contentDescription=""
+        android:src="@drawable/ic_add"
+        app:backgroundTint="@color/primary"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"

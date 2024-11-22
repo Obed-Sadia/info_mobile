@@ -41,7 +41,7 @@
     <!-- Application Info -->
     <string name="app_name">Gestion_Finance</string>
     <string name="version_application">App version: %1$s\nDeveloped by: %2$s</string>
-    <string name="developers_name">Sadia et Brice-Henry</string>
+    <string name="developers_name">Sadia and Brice-Henry</string>
     <string name="app_version">1.0.0</string>
 
     <!-- Navigation Menu -->
