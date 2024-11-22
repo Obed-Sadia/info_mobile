@@ -51,8 +51,22 @@ public class GlobalSettings {
     }
 
     public boolean isDarkModeEnabled() {
-        return context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
-                .getBoolean(KEY_DARK_MODE, isSystemDarkModeEnabled()); // Par défaut : selon le téléphone
+        SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+
+        // Vérifiez si le mode sombre a déjà été défini
+        if (!preferences.contains(KEY_DARK_MODE)) {
+            // Détectez l'état du mode sombre du système
+            int currentNightMode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+            boolean isSystemDarkMode = currentNightMode == Configuration.UI_MODE_NIGHT_YES;
+
+            // Sauvegardez cet état par défaut
+            setDarkModeEnabled(isSystemDarkMode);
+
+            return isSystemDarkMode;
+        }
+
+        // Retournez la valeur sauvegardée
+        return preferences.getBoolean(KEY_DARK_MODE, false);
     }
 
     public void setDarkModeEnabled(boolean isEnabled) {

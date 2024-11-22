@@ -58,13 +58,16 @@ public class ParametresActivity extends AppCompatActivity {
         // Configurer les spinners
         configureSpinners(globalSettings);
 
+        // Configurer le switch de mode sombre
+        configureDarkModeSwitch(globalSettings);
+
         // Charger les paramètres actuels
         loadCurrentSettings(globalSettings);
 
-        // Sauvegarder les modifications
+        // Configurer le bouton de sauvegarde
         buttonSaveSettings.setOnClickListener(v -> saveSettings(globalSettings));
 
-        // Déconnexion
+        // Configurer le bouton de déconnexion
         Button buttonLogout = findViewById(R.id.buttonLogout);
         buttonLogout.setOnClickListener(v -> logoutUser(globalSettings));
 
@@ -88,7 +91,6 @@ public class ParametresActivity extends AppCompatActivity {
     }
 
     private void configureSpinners(GlobalSettings globalSettings) {
-        // Configure le spinner des langues
         ArrayAdapter<String> languageAdapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
@@ -97,22 +99,30 @@ public class ParametresActivity extends AppCompatActivity {
         languageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerLanguage.setAdapter(languageAdapter);
 
-        // Définir la langue sélectionnée selon GlobalSettings
+        // Définir la langue sélectionnée
         String currentLanguage = globalSettings.getLanguage();
         if (currentLanguage.equals("fr")) {
             spinnerLanguage.setSelection(0);
-        } else if (currentLanguage.equals("en")) {
+        } else {
             spinnerLanguage.setSelection(1);
         }
 
-        // Configure le spinner des devises
-        ArrayAdapter<CharSequence> currencyAdapter = ArrayAdapter.createFromResource(
-                this,
-                R.array.currencies,
-                android.R.layout.simple_spinner_item
-        );
+        ArrayAdapter<CharSequence> currencyAdapter = ArrayAdapter.createFromResource(this,
+                R.array.currencies, android.R.layout.simple_spinner_item);
         currencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCurrency.setAdapter(currencyAdapter);
+    }
+
+    private void configureDarkModeSwitch(GlobalSettings globalSettings) {
+        // Synchroniser le switch avec GlobalSettings
+        boolean isDarkModeEnabled = globalSettings.isDarkModeEnabled();
+        switchDarkMode.setChecked(isDarkModeEnabled);
+
+        // Ajouter un écouteur pour les changements
+        switchDarkMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            globalSettings.setDarkModeEnabled(isChecked);
+            globalSettings.applyGlobalSettings();
+        });
     }
 
     private void loadCurrentSettings(GlobalSettings globalSettings) {
@@ -177,9 +187,6 @@ public class ParametresActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Redémarre l'activité actuelle pour refléter les changements.
-     */
     private void restartActivity() {
         Intent intent = getIntent(); // Récupérer l'intent actuel
         finish(); // Terminer l'activité actuelle
