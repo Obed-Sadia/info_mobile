@@ -3,7 +3,6 @@ package uqac.dim.gestion_finance;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -29,13 +28,12 @@ public class TransactionActivity extends AppCompatActivity {
         bottomNavigation = findViewById(R.id.bottomNavigation);
 
         if (bottomNavigation == null) {
-            Log.e(TAG, "initializeViews: BottomNavigation is null");
-            Toast.makeText(this, "Erreur lors de l'initialisation de l'interface", Toast.LENGTH_LONG).show();
+            Log.e(TAG, "initializeViews: BottomNavigation is null. Interface initialization failed.");
             finish();
+        } else {
+            // Sélectionner l'élément correspondant à TransactionActivity
+            bottomNavigation.setSelectedItemId(R.id.navigation_transaction);
         }
-
-        // Sélectionner l'élément correspondant à TransactionActivity
-        bottomNavigation.setSelectedItemId(R.id.navigation_transaction);
     }
 
     private void setupNavigation() {
@@ -50,6 +48,7 @@ public class TransactionActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.navigation_transaction) {
                 // Déjà sur TransactionActivity, aucune action nécessaire
+                Log.d(TAG, "setupNavigation: Already on TransactionActivity");
                 return true;
             } else if (itemId == R.id.navigation_budget) {
                 Intent intent = new Intent(TransactionActivity.this, BudgetActivity.class);

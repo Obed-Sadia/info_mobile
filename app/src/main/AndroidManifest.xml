@@ -2,6 +2,7 @@
     package="uqac.dim.gestion_finance">
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -9,22 +10,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Gestion_Finance">
 
-        <!-- Définir ConnexionActivity comme activité principale -->
-        <activity android:name=".ConnexionActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+    <!-- Définir ConnexionActivity comme activité principale -->
+    <activity android:name=".ConnexionActivity"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
 
-        <!-- Autres activités -->
-        <activity android:name=".MainActivity" />
-        <activity android:name=".InscriptionActivity" />
-        <activity android:name=".ParametresActivity" />
-        <activity android:name=".TransactionActivity" />
-        <activity android:name=".BudgetActivity" />
+    <!-- Autres activités -->
+    <activity android:name=".MainActivity" />
+    <activity android:name=".InscriptionActivity" />
+    <activity android:name=".ParametresActivity" />
+    <activity android:name=".TransactionActivity" />
+    <activity android:name=".BudgetActivity" />
 
     </application>
-
 </manifest>

@@ -1,5 +1,11 @@
 <resources>
 
+    <!-- Erreurs -->
+    <string name="error_title">Erreur</string>
+
+    <!-- Succès -->
+    <string name="login_success">Connexion réussie !</string>
+
     <string name="default_language">fr</string>
 
     <!-- Activité principale -->

@@ -1,5 +1,12 @@
 <resources>
 
+
+    <!-- Errors -->
+    <string name="error_title">Error</string>
+
+    <!-- Success -->
+    <string name="login_success">Login successful!</string>
+
     <string name="default_language">en</string>
 
     <!-- Main Activity -->
