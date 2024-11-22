@@ -41,6 +41,13 @@ public class ParametresActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Récupérer la langue sauvegardée dans les préférences
+        SharedPreferences prefs = getSharedPreferences("AppSettings", MODE_PRIVATE);
+        String language = prefs.getString("LANGUAGE", "fr"); // Par défaut : français
+
+        // Appliquer la langue dès le démarrage
+        LocaleHelper.setLocale(this, language);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_parametres);
 
@@ -48,7 +55,7 @@ public class ParametresActivity extends AppCompatActivity {
         currentUserId = getCurrentUserId();
         if (currentUserId == -1) {
             // Gérer le cas où l'ID n'est pas trouvé
-            Toast.makeText(this, "Erreur: Utilisateur non identifié", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.erreur_utilisateur_non_identifie), Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -61,6 +68,7 @@ public class ParametresActivity extends AppCompatActivity {
         textViewAccountInfo = findViewById(R.id.textViewAccountInfo);
         textViewAppInfo = findViewById(R.id.textViewAppInfo);
         buttonSaveSettings = findViewById(R.id.buttonSaveSettings);
+        Button buttonLogout = findViewById(R.id.buttonLogout);
 
 
         // Initialisation de la base de données
@@ -68,8 +76,11 @@ public class ParametresActivity extends AppCompatActivity {
         parametresDao = db.parametresDao();
 
         // Configuration des spinners
-        ArrayAdapter<CharSequence> languageAdapter = ArrayAdapter.createFromResource(this,
-                R.array.languages, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> languageAdapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_item,
+                new String[]{getString(R.string.language_french), getString(R.string.language_english)}
+        );
         languageAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerLanguage.setAdapter(languageAdapter);
 
@@ -82,12 +93,10 @@ public class ParametresActivity extends AppCompatActivity {
         loadCurrentSettings();
 
         // Configuration du bouton de sauvegarde
-        buttonSaveSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveSettings();
-            }
-        });
+        buttonSaveSettings.setOnClickListener(v -> saveSettings());
+
+        // Configuration du bouton de déconnexion
+        buttonLogout.setOnClickListener(v -> logoutUser());
 
         // Affichage des informations sur le compte et l'application
         updateAccountInfo();
@@ -102,65 +111,102 @@ public class ParametresActivity extends AppCompatActivity {
     }
 
     private void loadCurrentSettings() {
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    final Parametres parametres = parametresDao.getByUserId(currentUserId);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (parametres != null) {
-                                spinnerLanguage.setSelection(getIndex(spinnerLanguage, parametres.Langue));
-                                spinnerCurrency.setSelection(getIndex(spinnerCurrency, parametres.Devise));
-                                switchNotifications.setChecked(parametres.Notifications);
-                                switchDarkMode.setChecked(parametres.Mode_sombre);
-                            } else {
-                                // Gérer le cas où aucun paramètre n'est trouvé
-                                Toast.makeText(ParametresActivity.this, "Aucun paramètre trouvé pour cet utilisateur", Toast.LENGTH_SHORT).show();
-                            }
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                final Parametres parametres = parametresDao.getByUserId(currentUserId);
+                runOnUiThread(() -> {
+                    if (parametres != null) {
+                        // Mapper le code de langue aux noms explicites dans le spinner
+                        if (parametres.Langue.equals("fr")) {
+                            spinnerLanguage.setSelection(getIndex(spinnerLanguage, getString(R.string.language_french)));
+                        } else if (parametres.Langue.equals("en")) {
+                            spinnerLanguage.setSelection(getIndex(spinnerLanguage, getString(R.string.language_english)));
                         }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    runOnUiThread(() -> Toast.makeText(ParametresActivity.this, "Erreur lors du chargement des paramètres", Toast.LENGTH_LONG).show());
-                }
+
+                        spinnerCurrency.setSelection(getIndex(spinnerCurrency, parametres.Devise));
+                        switchNotifications.setChecked(parametres.Notifications);
+                        switchDarkMode.setChecked(parametres.Mode_sombre);
+                    } else {
+                        Toast.makeText(ParametresActivity.this, "Aucun paramètre trouvé pour cet utilisateur", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(ParametresActivity.this, "Erreur lors du chargement des paramètres", Toast.LENGTH_LONG).show());
             }
         });
     }
 
     private void saveSettings() {
+        // Récupérer tous les paramètres
+        String selectedLanguage = spinnerLanguage.getSelectedItem().toString();
+        String selectedCurrency = spinnerCurrency.getSelectedItem().toString();
+        boolean isNotificationsEnabled = switchNotifications.isChecked();
+        boolean isDarkModeEnabled = switchDarkMode.isChecked();
+
+        // Mapper les langues explicites aux codes de langue
+        String languageCode;
+        if (selectedLanguage.equals(getString(R.string.language_french))) {
+            languageCode = "fr";
+        } else if (selectedLanguage.equals(getString(R.string.language_english))) {
+            languageCode = "en";
+        } else {
+            languageCode = "fr"; // Par défaut
+        }
+
+        // Sauvegarder les paramètres dans la base de données
         Parametres parametres = new Parametres();
         parametres.ID_Utilisateur = currentUserId;
-        parametres.Langue = spinnerLanguage.getSelectedItem().toString();
-        parametres.Devise = spinnerCurrency.getSelectedItem().toString();
-        parametres.Notifications = switchNotifications.isChecked();
-        parametres.Mode_sombre = switchDarkMode.isChecked();
+        parametres.Langue = languageCode;
+        parametres.Devise = selectedCurrency;
+        parametres.Notifications = isNotificationsEnabled;
+        parametres.Mode_sombre = isDarkModeEnabled;
 
-        Executors.newSingleThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Parametres existingParams = parametresDao.getByUserId(currentUserId);
-                    if (existingParams != null) {
-                        parametres.ID_Parametres = existingParams.ID_Parametres;
-                        parametresDao.update(parametres);
-                    } else {
-                        parametresDao.insert(parametres);
-                    }
-                    runOnUiThread(() -> {
-                        Toast.makeText(ParametresActivity.this, "Paramètres sauvegardés", Toast.LENGTH_SHORT).show();
-                        applyGlobalSettings(parametres);
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    runOnUiThread(() -> Toast.makeText(ParametresActivity.this, "Erreur lors de la sauvegarde des paramètres", Toast.LENGTH_LONG).show());
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                Parametres existingParams = parametresDao.getByUserId(currentUserId);
+                if (existingParams != null) {
+                    parametres.ID_Parametres = existingParams.ID_Parametres;
+                    parametresDao.update(parametres);
+                } else {
+                    parametresDao.insert(parametres);
                 }
+
+                // Sauvegarder les paramètres globalement
+                SharedPreferences prefs = getSharedPreferences("AppSettings", MODE_PRIVATE);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString("LANGUAGE", languageCode);
+                editor.putString("CURRENCY", selectedCurrency);
+                editor.putBoolean("NOTIFICATIONS", isNotificationsEnabled);
+                editor.putBoolean("DARK_MODE", isDarkModeEnabled);
+                editor.apply();
+
+                runOnUiThread(() -> {
+                    Toast.makeText(
+                            ParametresActivity.this,
+                            getString(R.string.parametres_sauvegardes),
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    // Appliquer les paramètres et redémarrer l'activité
+                    applyGlobalSettings(parametres);
+                    Log.d(TAG, "applyGlobalSettings called with language: " + parametres.Langue);
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                runOnUiThread(() -> Toast.makeText(
+                        ParametresActivity.this,
+                        getString(R.string.erreur_sauvegarde_parametres),
+                        Toast.LENGTH_LONG
+                ).show());
             }
         });
     }
 
     private void applyGlobalSettings(Parametres parametres) {
+        // Appliquer la langue
+        LocaleHelper.setLocale(this, parametres.Langue);
+
         // Appliquer le mode sombre
         if (parametres.Mode_sombre) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -168,28 +214,12 @@ public class ParametresActivity extends AppCompatActivity {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
 
-        // Appliquer la langue
-        Locale newLocale = new Locale(parametres.Langue);
-        Locale.setDefault(newLocale);
-        Configuration config = getResources().getConfiguration();
-        config.setLocale(newLocale);
-        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-
-        // Sauvegarder la devise pour une utilisation globale
-        SharedPreferences prefs = getSharedPreferences("AppSettings", MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("CURRENCY", parametres.Devise);
-        editor.apply();
-
-        // Notifier les autres activités du changement de paramètres
-        Intent intent = new Intent("SETTINGS_UPDATED");
-        sendBroadcast(intent);
-
-        // Redémarrer l'activité principale pour appliquer les changements
-        Intent mainIntent = new Intent(this, MainActivity.class);
-        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(mainIntent);
+        // Redémarrer l'activité pour appliquer tous les changements
+        overridePendingTransition(0, 0); // Désactiver les animations
+        Intent intent = getIntent();
         finish();
+        startActivity(intent);
+        overridePendingTransition(0, 0); // Désactiver les animations
     }
 
 
@@ -199,20 +229,31 @@ public class ParametresActivity extends AppCompatActivity {
                 final Utilisateur user = db.utilisateurDao().getById(currentUserId);
                 runOnUiThread(() -> {
                     if (user != null) {
-                        textViewAccountInfo.setText("Nom d'utilisateur: " + user.Nom + "\nEmail: " + user.Email);
+                        textViewAccountInfo.setText(
+                                getString(R.string.nom_utilisateur, user.Nom, user.Email)
+                        );
                     } else {
-                        textViewAccountInfo.setText("Informations non disponibles");
+                        textViewAccountInfo.setText(getString(R.string.informations_non_disponibles));
                     }
                 });
             } catch (Exception e) {
                 e.printStackTrace();
-                runOnUiThread(() -> Toast.makeText(ParametresActivity.this, "Erreur lors de la récupération des informations du compte", Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast.makeText(
+                        ParametresActivity.this,
+                        getString(R.string.erreur_recuperation_compte),
+                        Toast.LENGTH_LONG
+                ).show());
             }
         });
     }
 
     private void updateAppInfo() {
-        textViewAppInfo.setText("Version de l'application: 1.0\nDéveloppé par: La team Lion");
+        String appVersion = getString(R.string.app_version); // Version définie dans strings.xml
+        String developers = getString(R.string.developers_name); // Référence depuis strings.xml
+
+        textViewAppInfo.setText(
+                getString(R.string.version_application, appVersion, developers)
+        );
     }
 
     private int getIndex(Spinner spinner, String myString) {
@@ -244,16 +285,19 @@ public class ParametresActivity extends AppCompatActivity {
             if (itemId == R.id.navigation_home) {
                 Intent intent = new Intent(ParametresActivity.this, MainActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0); // Désactiver les animations
                 finish();
                 return true;
             } else if (itemId == R.id.navigation_transaction) {
                 Intent intent = new Intent(ParametresActivity.this, TransactionActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0); // Désactiver les animations
                 finish();
                 return true;
             } else if (itemId == R.id.navigation_budget) {
                 Intent intent = new Intent(ParametresActivity.this, BudgetActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0); // Désactiver les animations
                 finish();
                 return true;
             } else if (itemId == R.id.navigation_parametres) {
@@ -261,5 +305,20 @@ public class ParametresActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    private void logoutUser() {
+        // Supprimez l'ID de l'utilisateur des SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.remove("USER_ID"); // Supprime l'ID utilisateur
+        editor.apply();
+
+        // Redirection vers l'écran de connexion
+        Intent intent = new Intent(ParametresActivity.this, ConnexionActivity.class);
+        startActivity(intent);
+
+        // Fermer toutes les activités existantes
+        finishAffinity();
     }
 }

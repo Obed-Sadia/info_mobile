@@ -94,18 +94,21 @@ public class MainActivity extends AppCompatActivity {
                 // Naviguer vers TransactionActivity
                 Intent intent = new Intent(MainActivity.this, TransactionActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0); // Désactiver les animations
                 finish(); // Terminer MainActivity
                 return true;
             } else if (itemId == R.id.navigation_budget) {
                 // Naviguer vers BudgetActivity
                 Intent intent = new Intent(MainActivity.this, BudgetActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0); // Désactiver les animations
                 finish(); // Terminer MainActivity
                 return true;
             } else if (itemId == R.id.navigation_parametres) {
                 // Naviguer vers ParametresActivity
                 Intent intent = new Intent(MainActivity.this, ParametresActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0); // Désactiver les animations
                 finish(); // Terminer MainActivity
                 return true;
             }
@@ -164,12 +167,12 @@ public class MainActivity extends AppCompatActivity {
             final Utilisateur user = utilisateurDao.getById(userId);
             runOnUiThread(() -> {
                 if (user != null) {
-                    welcomeMessage.setText("Bienvenue, " + user.Nom + "!");
+                    welcomeMessage.setText(getString(R.string.welcome_user, user.Nom));
                     Log.d(TAG, "loadUserData: Données utilisateur chargées pour " + user.Nom);
                     loadRecentTransactions(); // Charger les transactions après le chargement des données utilisateur
                 } else {
                     Log.e(TAG, "loadUserData: Utilisateur non trouvé");
-                    Toast.makeText(this, "Erreur: Utilisateur non trouvé", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getString(R.string.user_not_found_error), Toast.LENGTH_LONG).show();
                 }
             });
         }).start();
@@ -193,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "loadRecentTransactions: Chargement de " + recentTransactions.size() + " transactions pour l'utilisateur " + userId);
                 } else {
                     recentTransactionsList.setVisibility(View.GONE);
+                    noTransactionsMessage.setText(getString(R.string.no_transactions));
                     noTransactionsMessage.setVisibility(View.VISIBLE);
                     Log.d(TAG, "loadRecentTransactions: Aucune transaction récente trouvée pour l'utilisateur " + userId);
                 }
@@ -203,14 +207,7 @@ public class MainActivity extends AppCompatActivity {
     private int getCurrentUserId() {
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
         int userId = prefs.getInt("USER_ID", -1);
-
-        if (userId == -1) {
-            Log.e(TAG, "getCurrentUserId: User ID not found in SharedPreferences");
-            Intent loginIntent = new Intent(this, ConnexionActivity.class);
-            startActivity(loginIntent);
-            finish();
-        }
-
+        Log.d("MainActivity", "Retrieved User ID: " + userId);
         return userId;
     }
 }

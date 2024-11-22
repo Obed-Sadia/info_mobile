@@ -45,6 +45,7 @@ public class TransactionActivity extends AppCompatActivity {
             if (itemId == R.id.navigation_home) {
                 Intent intent = new Intent(TransactionActivity.this, MainActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0); // Désactiver les animations
                 finish(); // Terminer TransactionActivity
                 return true;
             } else if (itemId == R.id.navigation_transaction) {
@@ -53,11 +54,13 @@ public class TransactionActivity extends AppCompatActivity {
             } else if (itemId == R.id.navigation_budget) {
                 Intent intent = new Intent(TransactionActivity.this, BudgetActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0); // Désactiver les animations
                 finish(); // Terminer TransactionActivity
                 return true;
             } else if (itemId == R.id.navigation_parametres) {
                 Intent intent = new Intent(TransactionActivity.this, ParametresActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0); // Désactiver les animations
                 finish(); // Terminer TransactionActivity
                 return true;
             }

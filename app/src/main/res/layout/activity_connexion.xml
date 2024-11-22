@@ -12,21 +12,21 @@
         android:layout_height="wrap_content"
         android:src="@drawable/logo"
         android:layout_marginTop="-20px"
-        android:contentDescription="hjjgjhgj" />
+        android:contentDescription="@string/logo_description" />
 
     <EditText
         android:id="@+id/editTextEmailLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10px"
-        android:hint="Email" />
+        android:hint="@string/login_hint" />
 
     <EditText
         android:id="@+id/editTextMotDePasseLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20px"
-        android:hint="Mot de passe"
+        android:hint="@string/password_hint"
         android:inputType="textPassword" />
 
     <Button
@@ -34,14 +34,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#2eb2ff"
-        android:text="Se connecter" />
+        android:text="@string/connexion_button" />
 
     <!-- Lien pour créer un compte -->
     <TextView
         android:id="@+id/creationC0mpte"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Créer un compte"
+        android:text="@string/create_account_link"
         android:textColor="@android:color/holo_blue_dark"
         android:textStyle="bold"
         android:layout_marginTop="16dp"

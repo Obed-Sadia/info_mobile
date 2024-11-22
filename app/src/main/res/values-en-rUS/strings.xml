@@ -1,0 +1,92 @@
+<resources>
+
+    <string name="default_language">en</string>
+
+    <!-- Main Activity -->
+    <string name="main_activity_started">MainActivity started</string>
+    <string name="main_activity_setup_completed">MainActivity setup completed</string>
+    <string name="main_activity_resumed">MainActivity resumed</string>
+    <string name="main_activity_paused">MainActivity paused</string>
+    <string name="ui_updated">UI updated</string>
+
+    <!-- General Errors -->
+    <string name="error_null_views">One or more views are null</string>
+    <string name="error_initializing_ui">Error initializing UI</string>
+    <string name="error_invalid_user_id">Invalid user ID</string>
+    <string name="error_user_not_found">User not found</string>
+
+    <!-- User Data -->
+    <string name="user_data_loaded">User data loaded for %1$s</string>
+    <string name="transactions_loaded">Loaded %1$d transactions for user %2$d</string>
+    <string name="no_recent_transactions">No recent transactions found for user %1$d</string>
+    <string name="user_prefs">UserPrefs</string>
+    <string name="user_id_key">USER_ID</string>
+    <string name="user_id_retrieved">Retrieved user ID: %1$d</string>
+    <string name="settings_updated">SETTINGS_UPDATED</string>
+
+    <!-- Account Management -->
+    <string name="email_already_used">This email is already in use</string>
+    <string name="registration_success">Registration successful</string>
+    <string name="database_name">finance_database</string>
+    <string name="fill_all_fields">Please fill in all the fields</string>
+    <string name="invalid_credentials">Invalid email/username or password</string>
+
+    <!-- Application Info -->
+    <string name="app_name">Gestion_Finance</string>
+    <string name="version_application">App version: %1$s\nDeveloped by: %2$s</string>
+    <string name="developers_name">Sadia et Brice-Henry</string>
+    <string name="app_version">1.0.0</string>
+
+    <!-- Navigation Menu -->
+    <string name="navigation_home">Home</string>
+    <string name="navigation_transaction">Transaction</string>
+    <string name="navigation_budget">Budget</string>
+    <string name="navigation_parametres">Settings</string>
+
+    <!-- Settings -->
+    <string name="parametres">Settings</string>
+    <string name="langue">Language</string>
+    <string name="language_french">French</string>
+    <string name="language_english">English</string>
+    <string name="devises">Currencies</string>
+    <string name="notifications">Notifications</string>
+    <string name="activer_notifications">Enable notifications</string>
+    <string name="apparence">Appearance</string>
+    <string name="mode_sombre">Dark mode</string>
+    <string name="informations_compte">Account Information</string>
+    <string name="a_propos">About</string>
+    <string name="sauvegarder_parametres">Save settings</string>
+    <string name="logout_button">Log out</string>
+
+    <!-- Errors and Confirmations -->
+    <string name="user_not_found_error">Error: User not found.</string>
+    <string name="nom_utilisateur">Username: %1$s\nEmail: %2$s</string>
+    <string name="erreur_utilisateur_non_identifie">User not identified</string>
+    <string name="parametres_sauvegardes">Settings saved successfully</string>
+    <string name="erreur_sauvegarde_parametres">Error saving settings</string>
+    <string name="erreur_recuperation_compte">Error retrieving account information</string>
+    <string name="informations_non_disponibles">No information available</string>
+
+    <!-- Login -->
+    <string name="login_hint">Login or email</string>
+    <string name="password_hint">Password</string>
+    <string name="connexion_button">Login</string>
+    <string name="create_account_link">Create an account</string>
+    <string name="email_error">Invalid email</string>
+    <string name="password_error">Password required</string>
+    <string name="login_error">Incorrect username or password</string>
+    <string name="logo_description">Application logo</string>
+    <string name="welcome_user">Welcome, %1$s!</string>
+
+    <!-- Transactions -->
+    <string name="recent_transactions_title">Recent Transactions</string>
+    <string name="no_transactions">No recent transactions found.</string>
+    <string name="no_transactions_message">No recent transactions</string>
+
+    <!-- Registration -->
+    <string name="hint_name">Name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="button_register">Register</string>
+    <string name="link_login">Log in</string>
+</resources>

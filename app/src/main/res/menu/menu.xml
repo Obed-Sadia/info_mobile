@@ -3,17 +3,17 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/home"
-        android:title="Accueil"/>
+        android:title="@string/navigation_home"/>
     <item
         android:id="@+id/navigation_transaction"
         android:icon="@drawable/transaction"
-        android:title="Transaction"/>
+        android:title="@string/navigation_transaction"/>
     <item
         android:id="@+id/navigation_budget"
         android:icon="@drawable/budget"
-        android:title="Budget"/>
+        android:title="@string/navigation_budget"/>
     <item
         android:id="@+id/navigation_parametres"
         android:icon="@drawable/parametre"
-        android:title="Paramètres"/>
+        android:title="@string/navigation_parametres"/>
 </menu>

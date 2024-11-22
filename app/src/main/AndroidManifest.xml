@@ -26,4 +26,5 @@
         <activity android:name=".BudgetActivity" />
 
     </application>
+
 </manifest>

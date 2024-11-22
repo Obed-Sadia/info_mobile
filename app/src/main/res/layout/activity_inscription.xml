@@ -13,13 +13,13 @@
         android:layout_height="wrap_content"
         android:src="@drawable/logo"
         android:layout_marginTop="-30dp"
-        android:contentDescription="Logo de l'application" />
+        android:contentDescription="@string/logo_description" />
 
     <EditText
         android:id="@+id/editTextNom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nom"
+        android:hint="@string/hint_name"
         android:textColorHint="?attr/colorOnSurfaceVariant"
         android:textColor="?attr/colorOnSurface"
         android:backgroundTint="?attr/colorPrimary" />
@@ -28,7 +28,7 @@
         android:id="@+id/editTextEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email"
+        android:hint="@string/hint_email"
         android:textColorHint="?attr/colorOnSurfaceVariant"
         android:textColor="?attr/colorOnSurface"
         android:backgroundTint="?attr/colorPrimary" />
@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:hint="Mot de passe"
+        android:hint="@string/hint_password"
         android:inputType="textPassword"
         android:textColorHint="?attr/colorOnSurfaceVariant"
         android:textColor="?attr/colorOnSurface"
@@ -50,13 +50,13 @@
         android:layout_height="wrap_content"
         android:backgroundTint="?attr/colorPrimary"
         android:textColor="?attr/colorOnPrimary"
-        android:text="S'inscrire" />
+        android:text="@string/button_register" />
 
     <TextView
         android:id="@+id/connexionCompte"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=" Se connecter "
+        android:text="@string/link_login"
         android:textColor="?attr/colorPrimary"
         android:textStyle="bold"
         android:layout_marginTop="16dp"

@@ -1,6 +1,5 @@
 package uqac.dim.gestion_finance.database;
 
-
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -12,14 +11,18 @@ import uqac.dim.gestion_finance.dao.CategorieDao;
 import uqac.dim.gestion_finance.dao.ModePaiementDao;
 import uqac.dim.gestion_finance.dao.BudgetDao;
 import uqac.dim.gestion_finance.dao.ParametresDao;
+import uqac.dim.gestion_finance.dao.SessionTokenDao; // Import du DAO
 import uqac.dim.gestion_finance.entities.UserTransaction;
 import uqac.dim.gestion_finance.entities.Utilisateur;
 import uqac.dim.gestion_finance.entities.Categorie;
 import uqac.dim.gestion_finance.entities.ModePaiement;
 import uqac.dim.gestion_finance.entities.Budget;
 import uqac.dim.gestion_finance.entities.Parametres;
+import uqac.dim.gestion_finance.entities.SessionToken; // Import de l'entité
 
-@Database(entities = {Utilisateur.class, Categorie.class, ModePaiement.class, UserTransaction.class, Budget.class, Parametres.class}, version = 1)
+@Database(entities = {Utilisateur.class, Categorie.class, ModePaiement.class, UserTransaction.class,
+        Budget.class, Parametres.class, SessionToken.class}, // Ajout de SessionToken
+        version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract UtilisateurDao utilisateurDao();
@@ -33,6 +36,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract BudgetDao budgetDao();
 
     public abstract ParametresDao parametresDao();
+
+    public abstract SessionTokenDao sessionTokenDao(); // Ajout de la méthode DAO
 
     private static volatile AppDatabase INSTANCE;
 

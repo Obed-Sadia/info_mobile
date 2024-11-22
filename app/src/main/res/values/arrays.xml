@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Liste des langues lisibles -->
     <string-array name="languages">
-        <item>Français</item>
-        <item>English</item>
-
+        <item>@string/language_french</item>
+        <item>@string/language_english</item>
     </string-array>
 
+    <!-- Liste des devises -->
     <string-array name="currencies">
         <item>EUR</item>
         <item>USD</item>
-
+        <item>CAD</item>
     </string-array>
 </resources>
