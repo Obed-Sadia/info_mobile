@@ -1,19 +1,25 @@
 package uqac.dim.gestion_finance;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.room.Room;
 
 import uqac.dim.gestion_finance.database.AppDatabase;
 import uqac.dim.gestion_finance.entities.Utilisateur;
 
 public class InscriptionActivity extends AppCompatActivity {
+
+    private static final String TAG = "InscriptionActivity";
 
     private EditText editTextNom, editTextEmail, editTextMotDePasse;
     private Button buttonInscription;
@@ -22,6 +28,7 @@ public class InscriptionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_inscription);
 
         editTextNom = findViewById(R.id.editTextNom);
@@ -37,22 +44,18 @@ public class InscriptionActivity extends AppCompatActivity {
 
             // Vérifiez que les champs ne sont pas vides
             if (nom.isEmpty() || email.isEmpty() || motDePasse.isEmpty()) {
-                Toast.makeText(InscriptionActivity.this, getString(R.string.fill_all_fields), Toast.LENGTH_SHORT).show();
+                showErrorDialog(getString(R.string.error_title), getString(R.string.fill_all_fields));
                 return;
             }
 
-            // Insérez l'utilisateur dans la base de données
             AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, getString(R.string.database_name)).build();
 
             new Thread(() -> {
-                // Vérifiez si un utilisateur avec cet email existe déjà
                 Utilisateur utilisateurExistant = db.utilisateurDao().getByEmail(email);
 
                 if (utilisateurExistant != null) {
-                    // L'email est déjà utilisé
-                    runOnUiThread(() -> Toast.makeText(InscriptionActivity.this, getString(R.string.email_already_used), Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> showErrorDialog(getString(R.string.error_title), getString(R.string.email_already_used)));
                 } else {
-                    // Insérez l'utilisateur
                     Utilisateur nouvelUtilisateur = new Utilisateur();
                     nouvelUtilisateur.Nom = nom;
                     nouvelUtilisateur.Email = email;
@@ -61,13 +64,9 @@ public class InscriptionActivity extends AppCompatActivity {
                     db.utilisateurDao().insert(nouvelUtilisateur);
 
                     runOnUiThread(() -> {
-                        Toast.makeText(InscriptionActivity.this, getString(R.string.registration_success), Toast.LENGTH_SHORT).show();
-
-                        // Rediriger vers l'activité de connexion
+                        Snackbar.make(findViewById(android.R.id.content), getString(R.string.registration_success), Snackbar.LENGTH_SHORT).show();
                         Intent intent = new Intent(InscriptionActivity.this, ConnexionActivity.class);
                         startActivity(intent);
-
-                        // Fermez cette activité pour éviter un retour via le bouton "Back"
                         finish();
                     });
                 }
@@ -78,5 +77,13 @@ public class InscriptionActivity extends AppCompatActivity {
             Intent intent = new Intent(InscriptionActivity.this, ConnexionActivity.class);
             startActivity(intent);
         });
+    }
+
+    private void showErrorDialog(String title, String message) {
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(android.R.string.ok, (dialog, which) -> dialog.dismiss())
+                .show();
     }
 }

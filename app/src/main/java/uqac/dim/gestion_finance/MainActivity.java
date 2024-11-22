@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -46,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // GlobalSettings s'applique automatiquement via MyApplication
         setContentView(R.layout.activity_accueil);
         Log.d(TAG, "onCreate: MainActivity started");
 
@@ -68,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (welcomeMessage == null || recentTransactionsList == null || noTransactionsMessage == null || bottomNavigation == null) {
             Log.e(TAG, "initializeViews: One or more views are null");
-            Toast.makeText(this, "Erreur lors de l'initialisation de l'interface", Toast.LENGTH_LONG).show();
             finish();
         }
     }
@@ -134,9 +134,7 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(settingsReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                registerReceiver(settingsReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-            }
+            registerReceiver(settingsReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
         }
         updateUI();
         Log.d(TAG, "onResume: MainActivity resumed");
@@ -172,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
                     loadRecentTransactions(); // Charger les transactions après le chargement des données utilisateur
                 } else {
                     Log.e(TAG, "loadUserData: Utilisateur non trouvé");
-                    Toast.makeText(this, getString(R.string.user_not_found_error), Toast.LENGTH_LONG).show();
                 }
             });
         }).start();

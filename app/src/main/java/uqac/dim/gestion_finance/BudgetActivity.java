@@ -3,7 +3,6 @@ package uqac.dim.gestion_finance;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +17,8 @@ public class BudgetActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // La configuration globale est déjà appliquée via MyApplication/GlobalSettings
         setContentView(R.layout.activity_budget);
         Log.d(TAG, "onCreate: BudgetActivity started");
 
@@ -30,7 +31,6 @@ public class BudgetActivity extends AppCompatActivity {
 
         if (bottomNavigation == null) {
             Log.e(TAG, "initializeViews: BottomNavigation is null");
-            Toast.makeText(this, "Erreur lors de l'initialisation de l'interface", Toast.LENGTH_LONG).show();
             finish();
         }
 
