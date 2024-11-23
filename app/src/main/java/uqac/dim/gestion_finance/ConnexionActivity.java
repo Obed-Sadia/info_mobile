@@ -39,7 +39,7 @@ public class ConnexionActivity extends AppCompatActivity {
         editTextEmailLogin = findViewById(R.id.editTextEmailLogin);
         editTextMotDePasseLogin = findViewById(R.id.editTextMotDePasseLogin);
         buttonConnexion = findViewById(R.id.buttonConnexion);
-        pageInscription = findViewById(R.id.creationC0mpte);
+        pageInscription = findViewById(R.id.creationCompte);
 
         db = AppDatabase.getDatabase(getApplicationContext());
 

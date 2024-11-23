@@ -38,7 +38,7 @@
 
     <!-- Lien pour créer un compte -->
     <TextView
-        android:id="@+id/creationC0mpte"
+        android:id="@+id/creationCompte"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/create_account_link"
