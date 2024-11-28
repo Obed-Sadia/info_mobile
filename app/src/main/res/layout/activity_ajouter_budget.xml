@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:text="Catégorie"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
@@ -49,8 +50,9 @@
         android:layout_height="wrap_content"
         android:text="Budget"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/autoCompleteCategory"
-        app:layout_constraintStart_toStartOf="@+id/textViewCategory"
+        app:layout_constraintStart_toStartOf="@id/textViewCategory"
         android:layout_marginTop="16dp" />
 
     <EditText
@@ -72,6 +74,7 @@
         android:layout_height="wrap_content"
         android:text="Montant"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/editTextBudgetName"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="16dp"
@@ -97,8 +100,9 @@
         android:layout_height="wrap_content"
         android:text="Récurrence"
         android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/editTextAmount"
-        app:layout_constraintStart_toStartOf="@+id/textViewCategory"
+        app:layout_constraintStart_toStartOf="@id/textViewCategory"
         android:layout_marginTop="16dp" />
 
     <Spinner
@@ -110,20 +114,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="20dp" />
 
-    <!-- Spinner pour les jours si la temporalité est mensuelle -->
+    <!-- Titre "Jour de fin" -->
     <TextView
         android:id="@+id/textViewDays"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Jour de fin"
         android:textSize="16sp"
+        android:textStyle="bold"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/spinnerTemporality"
-        app:layout_constraintStart_toStartOf="@+id/textViewCategory"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp" />
 
+    <!-- Spinner pour les jours de fin -->
     <Spinner
         android:id="@+id/spinnerDays"
         android:layout_width="0dp"
@@ -134,9 +141,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp" />
+        android:layout_marginTop="16dp" />
 
-    <!-- Boutons pour sauvegarder et réinitialiser côte à côte -->
+    <!-- Boutons pour sauvegarder et réinitialiser -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -146,7 +153,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="24dp">
 
         <Button
             android:id="@+id/buttonSaveBudget"
