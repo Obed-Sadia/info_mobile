@@ -7,12 +7,16 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class TransactionActivity extends AppCompatActivity {
 
     private static final String TAG = "TransactionActivity";
 
     private BottomNavigationView bottomNavigation;
+
+    private FloatingActionButton fabAddTransaction;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +26,12 @@ public class TransactionActivity extends AppCompatActivity {
 
         initializeViews();
         setupNavigation();
+        setupFab();
     }
 
     private void initializeViews() {
         bottomNavigation = findViewById(R.id.bottomNavigation);
+        fabAddTransaction = findViewById(R.id.fabAddTransaction);
 
         if (bottomNavigation == null) {
             Log.e(TAG, "initializeViews: BottomNavigation is null. Interface initialization failed.");
@@ -64,6 +70,19 @@ public class TransactionActivity extends AppCompatActivity {
                 return true;
             }
             return false;
+        });
+    }
+
+    private void setupFab() {
+        fabAddTransaction.setOnClickListener(v -> {
+            Log.d(TAG, "setupFab: FloatingActionButton clicked");
+
+            // Remplacez l'action ici par ce que vous voulez faire (exemple : ouvrir une nouvelle activité)
+            Log.d(TAG, "setupFab: Redirection vers AjouterTransactionActivity");
+
+            // Exemple : Redirection vers une activité de création de budget
+            Intent intent = new Intent(TransactionActivity.this, AjouterTransactionActivity.class);
+            startActivity(intent);
         });
     }
 }

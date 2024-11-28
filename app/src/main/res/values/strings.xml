@@ -1,5 +1,8 @@
 <resources>
 
+    <string name="add_budget">Créer un budget</string>
+    <string name="add_transaction">Ajouter une transaction</string>
+
     <!-- Erreurs -->
     <string name="error_title">Erreur</string>
 

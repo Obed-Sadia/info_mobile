@@ -8,21 +8,21 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class AjouterBudgetActivity extends AppCompatActivity {
+public class AjouterTransactionActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ajouter_budget);
+        setContentView(R.layout.activity_ajouter_transaction);
 
         // Configurer la Toolbar avec flèche Précédent
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(R.string.add_budget); // Optionnel : enlever le titre de la Toolbar
+            getSupportActionBar().setTitle(R.string.add_transaction); // Optionnel : enlever le titre de la Toolbar
         }
 
     }

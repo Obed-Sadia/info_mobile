@@ -26,6 +26,7 @@
     <activity android:name=".TransactionActivity" />
     <activity android:name=".BudgetActivity" />
     <activity android:name=".AjouterBudgetActivity" />
+    <activity android:name=".AjouterTransactionActivity" />
 
     </application>
 </manifest>
