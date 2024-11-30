@@ -22,9 +22,16 @@ import uqac.dim.gestion_finance.entities.Budget;
 import uqac.dim.gestion_finance.entities.Parametres;
 import uqac.dim.gestion_finance.entities.SessionToken;
 
-@Database(entities = {Utilisateur.class, Categorie.class, ModePaiement.class, UserTransaction.class,
-        Budget.class, Parametres.class, SessionToken.class},
-        version = 1)
+@Database(entities = {
+        Utilisateur.class,
+        Categorie.class,
+        ModePaiement.class,
+        UserTransaction.class,
+        Budget.class,
+        Parametres.class,
+        SessionToken.class},
+        version = 3, // Version mise à jour pour refléter les changements
+        exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract UtilisateurDao utilisateurDao();
@@ -43,6 +50,7 @@ public abstract class AppDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     AppDatabase.class, "finance_database")
+                            .fallbackToDestructiveMigration() // Supprime les données existantes si la version change
                             .build();
 
                     // Insérer les catégories par défaut après la création de la base de données
@@ -68,7 +76,7 @@ public abstract class AppDatabase extends RoomDatabase {
             };
 
             for (String category : defaultCategories) {
-                Categorie categorie = new Categorie(category); // Utilisation correcte du constructeur
+                Categorie categorie = new Categorie(category);
                 categorieDao.insert(categorie);
             }
         }

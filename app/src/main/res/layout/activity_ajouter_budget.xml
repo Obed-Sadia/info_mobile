@@ -22,7 +22,7 @@
         android:id="@+id/textViewCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Catégorie"
+        android:text="@string/add_budget_category"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
@@ -34,7 +34,7 @@
         android:id="@+id/autoCompleteCategory"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Sélectionnez ou tapez une catégorie"
+        android:hint="@string/add_budget_category_hint"
         android:inputType="text"
         app:layout_constraintTop_toBottomOf="@id/textViewCategory"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +48,7 @@
         android:id="@+id/textViewName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Budget"
+        android:text="@string/add_budget_name"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/autoCompleteCategory"
@@ -59,7 +59,7 @@
         android:id="@+id/editTextBudgetName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Entrez le nom du budget"
+        android:hint="@string/add_budget_name_hint"
         app:layout_constraintTop_toBottomOf="@id/textViewName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,7 +72,7 @@
         android:id="@+id/textViewAmount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Montant"
+        android:text="@string/add_budget_amount"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/editTextBudgetName"
@@ -84,7 +84,7 @@
         android:id="@+id/editTextAmount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Entrez le montant"
+        android:hint="@string/add_budget_amount_hint"
         android:inputType="numberDecimal"
         app:layout_constraintTop_toBottomOf="@id/textViewAmount"
         app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +98,7 @@
         android:id="@+id/textViewTemporality"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Récurrence"
+        android:text="@string/add_budget_recurrence"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/editTextAmount"
@@ -116,39 +116,12 @@
         android:layout_marginEnd="16dp"
         android:layout_marginTop="20dp" />
 
-    <!-- Titre "Jour de fin" -->
-    <TextView
-        android:id="@+id/textViewDays"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Jour de fin"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/spinnerTemporality"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp" />
-
-    <!-- Spinner pour les jours de fin -->
-    <Spinner
-        android:id="@+id/spinnerDays"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/textViewDays"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp" />
-
     <!-- Boutons pour sauvegarder et réinitialiser -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/spinnerDays"
+        app:layout_constraintTop_toBottomOf="@id/spinnerTemporality"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="16dp"
@@ -160,7 +133,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Sauvegarder" />
+            android:text="@string/save" />
 
         <View
             android:layout_width="24dp"
@@ -171,7 +144,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Réinitialiser" />
+            android:text="@string/reset" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

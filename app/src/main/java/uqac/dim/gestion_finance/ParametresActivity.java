@@ -1,5 +1,6 @@
 package uqac.dim.gestion_finance;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import java.util.concurrent.Executors;
 
@@ -43,7 +45,6 @@ public class ParametresActivity extends AppCompatActivity {
         // Récupérer l'ID utilisateur
         currentUserId = globalSettings.getUserId();
         if (currentUserId == -1) {
-            Log.e(TAG, "Utilisateur non identifié.");
             finish();
             return;
         }
@@ -101,7 +102,7 @@ public class ParametresActivity extends AppCompatActivity {
 
         // Définir la langue sélectionnée
         String currentLanguage = globalSettings.getLanguage();
-        if (currentLanguage.equals("fr")) {
+        if (currentLanguage.equals(getString(R.string.language_code_fr))) {
             spinnerLanguage.setSelection(0);
         } else {
             spinnerLanguage.setSelection(1);
@@ -137,7 +138,6 @@ public class ParametresActivity extends AppCompatActivity {
                     }
                 });
             } catch (Exception e) {
-                Log.e(TAG, "Erreur lors du chargement des paramètres", e);
             }
         });
 
@@ -154,12 +154,14 @@ public class ParametresActivity extends AppCompatActivity {
 
         String languageCode = selectedLanguage.equals(getString(R.string.language_french)) ? "fr" : "en";
 
+        // Sauvegarde des paramètres dans GlobalSettings
         globalSettings.setLanguage(languageCode);
         globalSettings.setDarkModeEnabled(isDarkModeEnabled);
-        globalSettings.applyGlobalSettings();
+        globalSettings.setCurrency(selectedCurrency);
 
         Executors.newSingleThreadExecutor().execute(() -> {
             try {
+                // Préparez l'objet Parametres
                 Parametres parametres = new Parametres();
                 parametres.ID_Utilisateur = currentUserId;
                 parametres.Langue = languageCode;
@@ -167,22 +169,24 @@ public class ParametresActivity extends AppCompatActivity {
                 parametres.Notifications = isNotificationsEnabled;
                 parametres.Mode_sombre = isDarkModeEnabled;
 
+                // Vérifiez et insérez/mettre à jour les paramètres
                 Parametres existingParams = parametresDao.getByUserId(currentUserId);
+
                 if (existingParams != null) {
+                    // Mettre à jour les paramètres
                     parametres.ID_Parametres = existingParams.ID_Parametres;
                     parametresDao.update(parametres);
+
                 } else {
+                    // Insérer les nouveaux paramètres
                     parametresDao.insert(parametres);
                 }
-
+                // Appliquer les changements d'UI
                 runOnUiThread(() -> {
-                    Log.d(TAG, "Paramètres sauvegardés et appliqués");
-
-                    // Redémarrage explicite de l'activité pour appliquer les changements immédiatement
-                    restartActivity();
+                    LocaleHelper.setLocale(this, globalSettings.getLanguage());
+                    updateUI(globalSettings); // Met à jour les éléments de l'interface utilisateur
                 });
             } catch (Exception e) {
-                Log.e(TAG, "Erreur lors de la sauvegarde des paramètres", e);
             }
         });
     }
@@ -190,12 +194,14 @@ public class ParametresActivity extends AppCompatActivity {
     private void restartActivity() {
         Intent intent = getIntent(); // Récupérer l'intent actuel
         finish(); // Terminer l'activité actuelle
+        overridePendingTransition(0, 0); // Désactiver les animations de transition
         startActivity(intent); // Relancer l'activité
-        overridePendingTransition(0, 0); // Désactiver les animations
+        overridePendingTransition(0, 0); // Désactiver les animations de transition
     }
 
     private void logoutUser(GlobalSettings globalSettings) {
         globalSettings.clearUserSession();
+
 
         Intent intent = new Intent(ParametresActivity.this, ConnexionActivity.class);
         startActivity(intent);
@@ -218,14 +224,14 @@ public class ParametresActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     if (user != null) {
                         textViewAccountInfo.setText(
-                                getString(R.string.nom_utilisateur, user.Nom, user.Email)
+                                getString(R.string.account_info, user.Nom, user.Email)
                         );
                     } else {
                         textViewAccountInfo.setText(getString(R.string.informations_non_disponibles));
                     }
                 });
             } catch (Exception e) {
-                Log.e(TAG, "Erreur lors de la récupération des informations de compte", e);
+                Log.e(TAG, getString(R.string.error_fetching_account_info), e);
             }
         });
     }
@@ -235,7 +241,7 @@ public class ParametresActivity extends AppCompatActivity {
         String developers = getString(R.string.developers_name);
 
         textViewAppInfo.setText(
-                getString(R.string.version_application, appVersion, developers)
+                getString(R.string.application_info, appVersion, developers)
         );
     }
 
@@ -269,4 +275,30 @@ public class ParametresActivity extends AppCompatActivity {
             });
         }
     }
+
+    private void updateUI(GlobalSettings globalSettings) {
+        // Mettre à jour la langue globalement avant la mise à jour des vues
+        LocaleHelper.setLocale(this, globalSettings.getLanguage());
+
+        // Mise à jour de la langue sélectionnée dans le spinner
+        String currentLanguage = globalSettings.getLanguage();
+        spinnerLanguage.setSelection(currentLanguage.equals(getString(R.string.default_language)) ? 0 : 1);
+
+        // Mise à jour de la devise sélectionnée dans le spinner
+        String currentCurrency = globalSettings.getCurrency();
+        spinnerCurrency.setSelection(getIndex(spinnerCurrency, currentCurrency));
+
+        // Mise à jour de l'état du switch de mode sombre
+        boolean isDarkModeEnabled = globalSettings.isDarkModeEnabled();
+        switchDarkMode.setChecked(isDarkModeEnabled);
+
+        // Mise à jour des autres informations visibles (comme l'info de compte et app info)
+        updateAccountInfo();
+        updateAppInfo();
+
+        // Recharger l'activité pour les changements de langue et de mode sombre
+        restartActivity();
+    }
+
+
 }

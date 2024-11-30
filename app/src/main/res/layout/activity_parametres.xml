@@ -20,6 +20,7 @@
 
             <!-- Paramètres -->
             <TextView
+                android:id="@+id/textViewTitleParametres"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/parametres"
@@ -30,6 +31,7 @@
 
             <!-- Langue -->
             <TextView
+                android:id="@+id/textViewLangue"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/langue"
@@ -45,6 +47,7 @@
 
             <!-- Devise -->
             <TextView
+                android:id="@+id/textViewDevises"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/devises"
@@ -60,6 +63,7 @@
 
             <!-- Notifications -->
             <TextView
+                android:id="@+id/textViewNotifications"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/notifications"
@@ -76,6 +80,7 @@
 
             <!-- Mode sombre -->
             <TextView
+                android:id="@+id/textViewApparence"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/apparence"
@@ -92,6 +97,7 @@
 
             <!-- Informations sur le compte -->
             <TextView
+                android:id="@+id/textViewInformationsCompte"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/informations_compte"
@@ -107,6 +113,7 @@
 
             <!-- Informations sur l'application -->
             <TextView
+                android:id="@+id/textViewAPropos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/a_propos"

@@ -1,101 +1,135 @@
 <resources>
 
-    <string name="add_budget">Create a budget</string>
-    <string name="add_transaction">Add a transaction</string>
+    <!-- Budget List -->
+    <string name="no_budgets_yet">No budget available.\nClick \'+\' to add one.</string>
+
+    <!-- Add a Budget -->
+    <string name="add_budget_category">Category</string>
+    <string name="add_budget_category_hint">Select or type a category</string>
+    <string name="add_budget_name">Budget</string>
+    <string name="add_budget_name_hint">Enter the budget name</string>
+    <string name="add_budget_amount">Amount</string>
+    <string name="add_budget_amount_hint">Enter the amount</string>
+    <string name="add_budget_recurrence">Recurrence</string>
+
+    <!-- General -->
+    <string name="app_name">Finance_Manager</string>
+    <string name="app_version">1.0.0</string>
+    <string name="default_language">en</string>
+    <string name="default_currency">USD</string>
+    <string name="ok">OK</string>
+    <string name="settings_updated">SETTINGS_UPDATED</string>
+    <string name="save">Save</string>
+    <string name="reset">Reset</string>
+
+    <!-- Information -->
+    <string name="account_info">Name: %1$s\nEmail: %2$s</string>
+    <string name="application_info">Version: %1$s\n%2$s</string>
+    <string name="developers_name">Developed by Sadia and Brice-Henry</string>
+    <string name="informations_non_disponibles">No information available</string>
+    <string name="version_application">Application version: %1$s\nDeveloped by: %2$s</string>
+
+    <!-- Languages -->
+    <string name="language_code_fr">fr</string>
+    <string name="language_code_en">en</string>
+    <string name="language_french">French</string>
+    <string name="language_english">English</string>
+
+    <!-- Logs -->
+    <string name="log_activity_started">BudgetActivity started</string>
+    <string name="log_budget_saved">Budget successfully saved.</string>
+    <string name="log_budgets_loaded">Budgets successfully loaded</string>
+    <string name="log_current_currency">Current currency: %1$s</string>
+    <string name="log_fab_clicked">Add Budget Button clicked</string>
+    <string name="log_last_budget_removed">Last budget removed</string>
+    <string name="log_no_budgets_found">No budgets found</string>
+    <string name="log_reset_fields">Fields reset.</string>
+    <string name="log_tag_budget_activity">BudgetActivity</string>
+    <string name="log_tag_global_settings">GlobalSettings</string>
+    <string name="language_saved_log">Language saved: %1$s</string>
+    <string name="user_data_loaded">User data loaded for %1$s</string>
 
     <!-- Errors -->
+    <string name="error_budget_exists">A budget with this name already exists. Please choose another one.</string>
+    <string name="error_fill_all_fields">All required fields must be filled.</string>
+    <string name="error_fetching_account_info">Error retrieving account information</string>
+    <string name="error_initializing_ui">Error initializing the interface</string>
+    <string name="error_invalid_amount">Invalid amount. Please enter a valid amount.</string>
+    <string name="error_invalid_user_id">Invalid user ID</string>
+    <string name="error_null_views">One or more views are null</string>
     <string name="error_title">Error</string>
+    <string name="error_user_not_found">User not found</string>
 
     <!-- Success -->
     <string name="login_success">Login successful!</string>
-
-    <string name="default_language">en</string>
-
-    <!-- Main Activity -->
-    <string name="main_activity_started">MainActivity started</string>
-    <string name="main_activity_setup_completed">MainActivity setup completed</string>
-    <string name="main_activity_resumed">MainActivity resumed</string>
-    <string name="main_activity_paused">MainActivity paused</string>
-    <string name="ui_updated">UI updated</string>
-
-    <!-- General Errors -->
-    <string name="error_null_views">One or more views are null</string>
-    <string name="error_initializing_ui">Error initializing UI</string>
-    <string name="error_invalid_user_id">Invalid user ID</string>
-    <string name="error_user_not_found">User not found</string>
-
-    <!-- User Data -->
-    <string name="user_data_loaded">User data loaded for %1$s</string>
-    <string name="transactions_loaded">Loaded %1$d transactions for user %2$d</string>
-    <string name="no_recent_transactions">No recent transactions found for user %1$d</string>
-    <string name="user_prefs">UserPrefs</string>
-    <string name="user_id_key">USER_ID</string>
-    <string name="user_id_retrieved">Retrieved user ID: %1$d</string>
-    <string name="settings_updated">SETTINGS_UPDATED</string>
-
-    <!-- Account Management -->
-    <string name="email_already_used">This email is already in use</string>
+    <string name="parametres_sauvegardes">Settings successfully saved</string>
     <string name="registration_success">Registration successful</string>
-    <string name="database_name">finance_database</string>
-    <string name="fill_all_fields">Please fill in all the fields</string>
-    <string name="invalid_credentials">Invalid email/username or password</string>
 
-    <!-- Application Info -->
-    <string name="app_name">Gestion_Finance</string>
-    <string name="version_application">App version: %1$s\nDeveloped by: %2$s</string>
-    <string name="developers_name">Sadia and Brice-Henry</string>
-    <string name="app_version">1.0.0</string>
-
-    <!-- Navigation Menu -->
+    <!-- Navigation -->
     <string name="navigation_home">Home</string>
     <string name="navigation_transaction">Transaction</string>
     <string name="navigation_budget">Budget</string>
     <string name="navigation_parametres">Settings</string>
 
     <!-- Settings -->
-    <string name="parametres">Settings</string>
-    <string name="langue">Language</string>
-    <string name="language_french">French</string>
-    <string name="language_english">English</string>
-    <string name="devises">Currencies</string>
-    <string name="notifications">Notifications</string>
     <string name="activer_notifications">Enable notifications</string>
-    <string name="apparence">Appearance</string>
-    <string name="mode_sombre">Dark mode</string>
-    <string name="informations_compte">Account Information</string>
     <string name="a_propos">About</string>
-    <string name="sauvegarder_parametres">Save settings</string>
+    <string name="apparence">Appearance</string>
+    <string name="devises">Currencies</string>
+    <string name="informations_compte">Account Information</string>
+    <string name="langue">Language</string>
     <string name="logout_button">Log out</string>
+    <string name="mode_sombre">Dark mode</string>
+    <string name="notifications">Notifications</string>
+    <string name="parametres">Settings</string>
+    <string name="sauvegarder_parametres">Save settings</string>
 
-    <!-- Errors and Confirmations -->
-    <string name="user_not_found_error">Error: User not found.</string>
-    <string name="nom_utilisateur">Username: %1$s\nEmail: %2$s</string>
-    <string name="erreur_utilisateur_non_identifie">User not identified</string>
-    <string name="parametres_sauvegardes">Settings saved successfully</string>
-    <string name="erreur_sauvegarde_parametres">Error saving settings</string>
-    <string name="erreur_recuperation_compte">Error retrieving account information</string>
-    <string name="informations_non_disponibles">No information available</string>
+    <!-- Budgets -->
+    <string name="add_budget">Create a budget</string>
+    <string name="add_transaction">Add a transaction</string>
+    <string name="budget_recurrence_monthly">Allocated this month</string>
+    <string name="budget_recurrence_yearly">Allocated this year</string>
+    <string name="no_budgets_message">No budgets found</string>
+
+    <!-- Transactions -->
+    <string name="no_recent_transactions">No recent transactions found for user %1$d</string>
+    <string name="no_transactions">No recent transactions found.</string>
+    <string name="no_transactions_message">No recent transactions</string>
+    <string name="recent_transactions_title">Recent transactions</string>
+    <string name="transactions_loaded">Loaded %1$d transactions for user %2$d</string>
 
     <!-- Login -->
-    <string name="login_hint">Login or email</string>
-    <string name="password_hint">Password</string>
     <string name="connexion_button">Login</string>
     <string name="create_account_link">Create an account</string>
     <string name="email_error">Invalid email</string>
-    <string name="password_error">Password required</string>
+    <string name="fill_all_fields">Please fill in all the fields</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_name">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="invalid_credentials">Invalid email/username or password</string>
     <string name="login_error">Incorrect username or password</string>
-    <string name="logo_description">Application logo</string>
+    <string name="login_hint">Username or email</string>
+    <string name="password_error">Password required</string>
+    <string name="password_hint">Password</string>
     <string name="welcome_user">Welcome, %1$s!</string>
 
-    <!-- Transactions -->
-    <string name="recent_transactions_title">Recent Transactions</string>
-    <string name="no_transactions">No recent transactions found.</string>
-    <string name="no_transactions_message">No recent transactions</string>
-
-    <!-- Registration -->
-    <string name="hint_name">Name</string>
-    <string name="hint_email">Email</string>
-    <string name="hint_password">Password</string>
+    <!-- Account Management -->
+    <string name="email_already_used">This email is already in use</string>
+    <string name="logo_description">logo_myBudget</string>
     <string name="button_register">Register</string>
     <string name="link_login">Log in</string>
+
+    <!-- Database -->
+    <string name="database_name">finance_database</string>
+
+    <!-- Recurrence Options -->
+    <string-array name="recurrence_options">
+        <item>None</item>
+        <item>Monthly</item>
+        <item>Yearly</item>
+    </string-array>
+
+    <string name="recurrence_none">None</string>
+    <string name="recurrence_monthly">Monthly</string>
+    <string name="recurrence_yearly">Yearly</string>
 </resources>

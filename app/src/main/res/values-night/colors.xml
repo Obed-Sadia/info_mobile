@@ -28,4 +28,7 @@
     <color name="income">#81C784</color>
     <color name="expense">#E57373</color>
     <color name="savings">#64B5F6</color>
+
+    <color name="green">#4CAF50</color> <!-- Exemple : Vert pour actif -->
+    <color name="gray">#9E9E9E</color> <!-- Exemple : Gris pour inactif -->
 </resources>

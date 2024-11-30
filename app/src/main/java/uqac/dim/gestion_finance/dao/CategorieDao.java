@@ -19,4 +19,7 @@ public interface CategorieDao {
 
     @Query("DELETE FROM Categorie")
     void deleteAllCategories();
+
+    @Query("SELECT * FROM categorie WHERE nom = :nom LIMIT 1")
+    Categorie getCategorieByName(String nom);
 }

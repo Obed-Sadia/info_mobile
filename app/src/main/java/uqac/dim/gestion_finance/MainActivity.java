@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadUserData() {
         int userId = getCurrentUserId();
         if (userId == -1) {
-            Log.e(TAG, "loadUserData: ID utilisateur invalide");
+            Log.e(TAG, getString(R.string.error_invalid_user_id));
             return;
         }
         new Thread(() -> {
@@ -166,10 +166,10 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 if (user != null) {
                     welcomeMessage.setText(getString(R.string.welcome_user, user.Nom));
-                    Log.d(TAG, "loadUserData: Données utilisateur chargées pour " + user.Nom);
+                    Log.d(TAG, getString(R.string.user_data_loaded, user.Nom));
                     loadRecentTransactions(); // Charger les transactions après le chargement des données utilisateur
                 } else {
-                    Log.e(TAG, "loadUserData: Utilisateur non trouvé");
+                    Log.e(TAG, getString(R.string.error_user_not_found));
                 }
             });
         }).start();
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadRecentTransactions() {
         int userId = getCurrentUserId();
         if (userId == -1) {
-            Log.e(TAG, "loadRecentTransactions: ID utilisateur invalide");
+            Log.e(TAG, getString(R.string.error_invalid_user_id));
             return;
         }
 
@@ -190,12 +190,12 @@ public class MainActivity extends AppCompatActivity {
                     recentTransactionsList.setAdapter(transactionAdapter);
                     recentTransactionsList.setVisibility(View.VISIBLE);
                     noTransactionsMessage.setVisibility(View.GONE);
-                    Log.d(TAG, "loadRecentTransactions: Chargement de " + recentTransactions.size() + " transactions pour l'utilisateur " + userId);
+                    Log.d(TAG, getString(R.string.transactions_loaded, recentTransactions.size(), userId));
                 } else {
                     recentTransactionsList.setVisibility(View.GONE);
                     noTransactionsMessage.setText(getString(R.string.no_transactions));
                     noTransactionsMessage.setVisibility(View.VISIBLE);
-                    Log.d(TAG, "loadRecentTransactions: Aucune transaction récente trouvée pour l'utilisateur " + userId);
+                    Log.d(TAG, getString(R.string.no_recent_transactions, userId));
                 }
             });
         }).start();
@@ -206,5 +206,13 @@ public class MainActivity extends AppCompatActivity {
         int userId = prefs.getInt("USER_ID", -1);
         Log.d("MainActivity", "Retrieved User ID: " + userId);
         return userId;
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        GlobalSettings globalSettings = new GlobalSettings(newBase);
+        String language = globalSettings.getLanguage(); // Récupère la langue sauvegardée
+        Context context = LocaleHelper.wrap(newBase, language); // Applique la langue
+        super.attachBaseContext(context);
     }
 }
