@@ -3,20 +3,35 @@ package uqac.dim.gestion_finance;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.List;
+import java.util.concurrent.Executors;
+
+import uqac.dim.gestion_finance.adapters.UserTransactionAdapter;
+import uqac.dim.gestion_finance.database.AppDatabase;
+import uqac.dim.gestion_finance.entities.UserTransaction;
 
 public class TransactionActivity extends AppCompatActivity {
 
     private static final String TAG = "TransactionActivity";
 
     private BottomNavigationView bottomNavigation;
-
     private FloatingActionButton fabAddTransaction;
+    private RecyclerView recyclerViewTransactions;
 
+    private UserTransactionAdapter transactionAdapter;
+    private AppDatabase db;
+
+    private View textViewNoTransactions; // Vue pour afficher "Aucune transaction"
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +42,22 @@ public class TransactionActivity extends AppCompatActivity {
         initializeViews();
         setupNavigation();
         setupFab();
+
+        // Initialiser la base de données
+        db = AppDatabase.getDatabase(getApplicationContext());
+
+        // Configurer le RecyclerView
+        setupRecyclerView();
+
+        // Charger les transactions
+        loadTransactions();
     }
 
     private void initializeViews() {
         bottomNavigation = findViewById(R.id.bottomNavigation);
         fabAddTransaction = findViewById(R.id.fabAddTransaction);
+        recyclerViewTransactions = findViewById(R.id.recyclerViewTransactions);
+        textViewNoTransactions = findViewById(R.id.textViewNoTransactions); // Lier la vue "Aucune transaction"
 
         if (bottomNavigation == null) {
             Log.e(TAG, "initializeViews: BottomNavigation is null. Interface initialization failed.");
@@ -77,12 +103,44 @@ public class TransactionActivity extends AppCompatActivity {
         fabAddTransaction.setOnClickListener(v -> {
             Log.d(TAG, "setupFab: FloatingActionButton clicked");
 
-            // Remplacez l'action ici par ce que vous voulez faire (exemple : ouvrir une nouvelle activité)
-            Log.d(TAG, "setupFab: Redirection vers AjouterTransactionActivity");
-
-            // Exemple : Redirection vers une activité de création de budget
+            // Redirection vers AjouterTransactionActivity
             Intent intent = new Intent(TransactionActivity.this, AjouterTransactionActivity.class);
             startActivity(intent);
         });
+    }
+
+    private void setupRecyclerView() {
+        recyclerViewTransactions.setLayoutManager(new LinearLayoutManager(this));
+        recyclerViewTransactions.setItemAnimator(new DefaultItemAnimator()); // Animation fluide
+        transactionAdapter = new UserTransactionAdapter(this, null); // Initialise l'adaptateur
+        recyclerViewTransactions.setAdapter(transactionAdapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadTransactions(); // Recharger les transactions chaque fois que l'activité est reprise
+    }
+
+    private void loadTransactions() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            List<UserTransaction> transactions = db.transactionDao().getAll(); // Charger les transactions
+            runOnUiThread(() -> {
+                if (transactions != null && !transactions.isEmpty()) {
+                    Log.d(TAG, "loadTransactions: Transactions loaded");
+                    textViewNoTransactions.setVisibility(View.GONE); // Masquer le texte "Aucune transaction"
+                    recyclerViewTransactions.setVisibility(View.VISIBLE); // Afficher le RecyclerView
+                    transactionAdapter.setTransactions(transactions); // Mettre à jour les données de l'adaptateur
+                } else {
+                    Log.w(TAG, "loadTransactions: No transactions found");
+                    showNoTransactionsMessage();
+                }
+            });
+        });
+    }
+
+    private void showNoTransactionsMessage() {
+        textViewNoTransactions.setVisibility(View.VISIBLE); // Afficher le message
+        recyclerViewTransactions.setVisibility(View.GONE); // Masquer le RecyclerView
     }
 }
