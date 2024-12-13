@@ -2,6 +2,7 @@ package uqac.dim.gestion_finance.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import uqac.dim.gestion_finance.EditerBudgetActivity;
 import uqac.dim.gestion_finance.R;
 import uqac.dim.gestion_finance.database.AppDatabase;
 import uqac.dim.gestion_finance.entities.Budget;
@@ -111,7 +113,9 @@ public class UserBudgetAdapter extends RecyclerView.Adapter<UserBudgetAdapter.Bu
         // Gestion du bouton Éditer
         holder.buttonEditBudget.setOnClickListener(v -> {
             Log.d("UserBudgetAdapter", "Éditer le budget : " + budget.nom);
-            // Logique pour naviguer vers l'édition du budget
+            Intent intent = new Intent(context, EditerBudgetActivity.class);
+            intent.putExtra("budgetId", budget.id); // Passez l'ID du budget
+            context.startActivity(intent);
         });
 
         // Gestion du bouton Supprimer

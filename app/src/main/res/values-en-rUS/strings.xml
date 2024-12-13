@@ -90,6 +90,8 @@
     <string name="budget_recurrence_monthly">Allocated this month</string>
     <string name="budget_recurrence_yearly">Allocated this year</string>
     <string name="no_budgets_message">No budgets found</string>
+    <string name="edit_budget">Edit budget</string>
+    <string name="update_budget">Update</string>
 
     <!-- Transactions -->
     <string name="no_recent_transactions">No recent transactions found for user %1$d</string>
@@ -124,9 +126,9 @@
 
     <!-- Recurrence Options -->
     <string-array name="recurrence_options">
-        <item>None</item>
-        <item>Monthly</item>
-        <item>Yearly</item>
+        <item>@string/recurrence_none</item>
+        <item>@string/recurrence_monthly</item>
+        <item>@string/recurrence_yearly</item>
     </string-array>
 
     <string name="recurrence_none">None</string>
