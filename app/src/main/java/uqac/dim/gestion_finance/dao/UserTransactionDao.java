@@ -48,4 +48,8 @@ public interface UserTransactionDao {
     // Récupérer les transactions récentes pour un utilisateur
     @Query("SELECT * FROM UserTransaction WHERE ID_Utilisateur = :userId ORDER BY Date_transaction DESC LIMIT :limit")
     List<UserTransaction> getRecentTransactions(int userId, int limit);
+
+    // Obtenir le total des montants pour un budget spécifique
+    @Query("SELECT SUM(Montant) FROM UserTransaction WHERE ID_Categorie = :budgetId")
+    Double getTotalAmountByBudgetId(int budgetId);
 }

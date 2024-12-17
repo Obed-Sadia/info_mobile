@@ -165,4 +165,28 @@
     <string name="recurrence_none">Aucune</string>
     <string name="recurrence_monthly">Mensuelle</string>
     <string name="recurrence_yearly">Annuelle</string>
+
+    <!-- Section Alertes -->
+    <string name="section_alerts">Alertes</string>
+    <string name="no_alerts">Aucune alerte pour le moment.</string>
+
+    <string name="alert_budget_25">%1$s a atteint 25%% (%2$.2f %3$s dépensé).</string>
+    <string name="alert_budget_50">%1$s a atteint 50%% (%2$.2f %3$s dépensé).</string>
+    <string name="alert_budget_75">%1$s a atteint 75%% (%2$.2f %3$s dépensé).</string>
+    <string name="alert_budget_100">%1$s a atteint 100%% (%2$.2f %3$s dépensé).</string>
+    <string name="alert_budget_exceeded">%1$s a été dépassé de %3$.2f%% (dépassement de %2$.2f %4$s).</string>
+
+    <!-- Section Rapport -->
+    <string name="section_reports">Rapports</string>
+    <string name="report_section_title">Rapports</string>
+    <string name="no_reports_available">Aucun rapport disponible pour le moment.</string>
+    <string name="report_placeholder">Les rapports graphiques seront affichés ici prochainement.</string>
+
+    <!-- Messages liés aux transactions -->
+    <string name="alert_recent_transaction">Transaction : %1$s - %2$.2f</string>
+
+    <string name="error_budget_inactive">Impossible de créer une transaction. Ce budget est désactivé.</string>
+
+    <string name="confirm_delete_transaction">Supprimer la transaction \"%1$s\" ?</string>
+    <string name="delete_transaction_confirmation">Êtes-vous sûr de vouloir supprimer cette transaction ? Cette action est irréversible.</string>
 </resources>

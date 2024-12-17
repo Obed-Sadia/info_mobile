@@ -1,86 +1,82 @@
 package uqac.dim.gestion_finance;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Executors;
 
-import uqac.dim.gestion_finance.adapters.UserTransactionAdapter;
+import uqac.dim.gestion_finance.dao.BudgetDao;
 import uqac.dim.gestion_finance.dao.UserTransactionDao;
 import uqac.dim.gestion_finance.dao.UtilisateurDao;
 import uqac.dim.gestion_finance.database.AppDatabase;
-import uqac.dim.gestion_finance.entities.UserTransaction;
+import uqac.dim.gestion_finance.entities.Budget;
 import uqac.dim.gestion_finance.entities.Utilisateur;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private static final String CHANNEL_ID = "ALERT_CHANNEL_ID";
+    private static int NOTIFICATION_ID = 1000;
 
     private TextView welcomeMessage;
-    private RecyclerView recentTransactionsList;
-    private TextView noTransactionsMessage;
+    private TextView alertMessage;
     private BottomNavigationView bottomNavigation;
 
     private AppDatabase db;
-    private UserTransactionDao userTransactionDao;
+    private UserTransactionDao transactionDao;
+    private BudgetDao budgetDao;
     private UtilisateurDao utilisateurDao;
-    private UserTransactionAdapter transactionAdapter;
 
     private BroadcastReceiver settingsReceiver;
+    private static final int REQUEST_POST_NOTIFICATIONS = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // GlobalSettings s'applique automatiquement via MyApplication
         setContentView(R.layout.activity_accueil);
         Log.d(TAG, "onCreate: MainActivity started");
 
+        createNotificationChannel();
+        requestNotificationPermission();
         initializeViews();
         initializeDatabase();
-        setupRecyclerView();
         loadUserData();
-        loadRecentTransactions();
+        loadRecentAlerts();
         setupNavigation();
         initializeSettingsReceiver();
-
-        Log.d(TAG, "onCreate: MainActivity setup completed");
     }
 
     private void initializeViews() {
         welcomeMessage = findViewById(R.id.welcomeMessage);
-        recentTransactionsList = findViewById(R.id.recentTransactionsList);
-        noTransactionsMessage = findViewById(R.id.noTransactionsMessage);
+        alertMessage = findViewById(R.id.alertMessage);
         bottomNavigation = findViewById(R.id.bottomNavigation);
-
-        if (welcomeMessage == null || recentTransactionsList == null || noTransactionsMessage == null || bottomNavigation == null) {
-            Log.e(TAG, "initializeViews: One or more views are null");
-            finish();
-        }
     }
 
     private void initializeDatabase() {
         db = AppDatabase.getDatabase(getApplicationContext());
-        userTransactionDao = db.transactionDao();
+        transactionDao = db.transactionDao();
+        budgetDao = db.budgetDao();
         utilisateurDao = db.utilisateurDao();
-    }
-
-    private void setupRecyclerView() {
-        recentTransactionsList.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void setupNavigation() {
@@ -88,28 +84,21 @@ public class MainActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.navigation_home) {
-                // Déjà sur MainActivity, aucune action nécessaire
                 return true;
             } else if (itemId == R.id.navigation_transaction) {
-                // Naviguer vers TransactionActivity
-                Intent intent = new Intent(MainActivity.this, TransactionActivity.class);
-                startActivity(intent);
-                overridePendingTransition(0, 0); // Désactiver les animations
-                finish(); // Terminer MainActivity
+                startActivity(new Intent(this, TransactionActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
                 return true;
             } else if (itemId == R.id.navigation_budget) {
-                // Naviguer vers BudgetActivity
-                Intent intent = new Intent(MainActivity.this, BudgetActivity.class);
-                startActivity(intent);
-                overridePendingTransition(0, 0); // Désactiver les animations
-                finish(); // Terminer MainActivity
+                startActivity(new Intent(this, BudgetActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
                 return true;
             } else if (itemId == R.id.navigation_parametres) {
-                // Naviguer vers ParametresActivity
-                Intent intent = new Intent(MainActivity.this, ParametresActivity.class);
-                startActivity(intent);
-                overridePendingTransition(0, 0); // Désactiver les animations
-                finish(); // Terminer MainActivity
+                startActivity(new Intent(this, ParametresActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
                 return true;
             }
             return false;
@@ -134,108 +123,180 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(settingsReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
         } else {
-            registerReceiver(settingsReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                registerReceiver(settingsReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+            }
         }
         updateUI();
-        Log.d(TAG, "onResume: MainActivity resumed");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(settingsReceiver);
-        Log.d(TAG, "onPause: MainActivity paused");
     }
 
     private void updateUI() {
         loadUserData();
-        if (transactionAdapter != null) {
-            transactionAdapter.updateCurrency();
-        }
-        Log.d(TAG, "updateUI: UI updated");
+        loadRecentAlerts();
     }
 
     private void loadUserData() {
         int userId = getCurrentUserId();
         if (userId == -1) {
-            Log.e(TAG, getString(R.string.error_invalid_user_id));
+            Log.e(TAG, "Invalid user ID");
             return;
         }
-        new Thread(() -> {
-            final Utilisateur user = utilisateurDao.getById(userId);
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            Utilisateur user = utilisateurDao.getById(userId);
             runOnUiThread(() -> {
                 if (user != null) {
                     welcomeMessage.setText(getString(R.string.welcome_user, user.Nom));
-                    Log.d(TAG, getString(R.string.user_data_loaded, user.Nom));
-                    loadRecentTransactions(); // Charger les transactions après le chargement des données utilisateur
-                } else {
-                    Log.e(TAG, getString(R.string.error_user_not_found));
                 }
             });
-        }).start();
+        });
     }
 
-    private void loadRecentTransactions() {
-        int userId = getCurrentUserId();
-        if (userId == -1) {
-            Log.e(TAG, getString(R.string.error_invalid_user_id));
-            return;
-        }
+    private void loadRecentAlerts() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            StringBuilder alerts = new StringBuilder();
 
-        new Thread(() -> {
-            final List<UserTransaction> recentTransactions = userTransactionDao.getRecentTransactions(userId, 3);
-            runOnUiThread(() -> {
-                if (recentTransactions != null && !recentTransactions.isEmpty()) {
-                    transactionAdapter = new UserTransactionAdapter(this, recentTransactions, new UserTransactionAdapter.OnTransactionActionListener() {
-                        @Override
-                        public void onEditTransaction(UserTransaction transaction) {
-                            // Rediriger vers EditTransactionActivity
-                            Intent intent = new Intent(MainActivity.this, EditerTransactionActivity.class);
-                            intent.putExtra("transactionId", transaction.ID_Transaction);
-                            startActivity(intent);
-                        }
+            GlobalSettings globalSettings = new GlobalSettings(this);
+            String currency = globalSettings.getCurrency();
 
-                        @Override
-                        public void onDeleteTransaction(UserTransaction transaction) {
-                            deleteTransaction(transaction);
-                        }
-                    });
-                    recentTransactionsList.setAdapter(transactionAdapter);
-                    recentTransactionsList.setVisibility(View.VISIBLE);
-                    noTransactionsMessage.setVisibility(View.GONE);
-                    Log.d(TAG, getString(R.string.transactions_loaded, recentTransactions.size(), userId));
-                } else {
-                    recentTransactionsList.setVisibility(View.GONE);
-                    noTransactionsMessage.setText(getString(R.string.no_transactions));
-                    noTransactionsMessage.setVisibility(View.VISIBLE);
-                    Log.d(TAG, getString(R.string.no_recent_transactions, userId));
+            // Charger depuis SharedPreferences les alertes déjà envoyées
+            SharedPreferences prefs = getSharedPreferences("AlertsPrefs", MODE_PRIVATE);
+            Set<String> sentAlerts = prefs.getStringSet("SENT_ALERTS", new HashSet<>());
+
+            // Charger les budgets
+            List<Budget> budgets = budgetDao.getAllBudgets();
+            budgets.sort((b1, b2) -> {
+                Double totalSpent1 = transactionDao.getTotalAmountByBudgetId(b1.id);
+                Double totalSpent2 = transactionDao.getTotalAmountByBudgetId(b2.id);
+
+                double spentAmount1 = (totalSpent1 != null) ? totalSpent1 : 0.0;
+                double spentAmount2 = (totalSpent2 != null) ? totalSpent2 : 0.0;
+
+                double percentage1 = (spentAmount1 / b1.montant) * 100;
+                double percentage2 = (spentAmount2 / b2.montant) * 100;
+
+                return Double.compare(percentage2, percentage1);
+            });
+
+            Set<String> newSentAlerts = new HashSet<>(sentAlerts); // Copie existante
+
+            for (Budget budget : budgets) {
+                Double totalSpent = transactionDao.getTotalAmountByBudgetId(budget.id);
+                double spentAmount = (totalSpent != null) ? totalSpent : 0.0;
+                double percentage = (spentAmount / budget.montant) * 100;
+
+                String alertString = null;
+                String alertKey = null; // clé unique pour identifier l'alerte (ex: "budgetId-pourcentage")
+
+                if (percentage > 100) {
+                    double overSpent = spentAmount - budget.montant;
+                    double overPercentage = percentage - 100;
+                    alertString = getString(R.string.alert_budget_exceeded, budget.nom, overSpent, overPercentage, currency);
+                    alertKey = budget.id + "-EXCEEDED";
+                } else if (percentage >= 100) {
+                    alertString = getString(R.string.alert_budget_100, budget.nom, spentAmount, currency);
+                    alertKey = budget.id + "-100";
+                } else if (percentage >= 75) {
+                    alertString = getString(R.string.alert_budget_75, budget.nom, spentAmount, currency);
+                    alertKey = budget.id + "-75";
+                } else if (percentage >= 50) {
+                    alertString = getString(R.string.alert_budget_50, budget.nom, spentAmount, currency);
+                    alertKey = budget.id + "-50";
+                } else if (percentage >= 25) {
+                    alertString = getString(R.string.alert_budget_25, budget.nom, spentAmount, currency);
+                    alertKey = budget.id + "-25";
                 }
-            });
-        }).start();
-    }
 
-    private void deleteTransaction(UserTransaction transaction) {
-        new Thread(() -> {
-            userTransactionDao.deleteTransactionById(transaction.ID_Transaction);
-            runOnUiThread(() -> {
-                loadRecentTransactions(); // Recharger les transactions après suppression
-                Log.d(TAG, "deleteTransaction: Transaction supprimée avec succès");
-            });
-        }).start();
+                if (alertString != null && alertKey != null) {
+                    // Vérifier si cette alerte a déjà été envoyée
+                    if (!sentAlerts.contains(alertKey)) {
+                        // Nouvelle alerte, on l'ajoute et on envoie la notif
+                        alerts.append(alertString).append("\n");
+                        sendNotification(alertString);
+                        newSentAlerts.add(alertKey);
+                    } else {
+                        // Alerte déjà envoyée, on ne notifie pas à nouveau
+                    }
+                }
+            }
+
+            // Sauvegarder la liste des alertes envoyées
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putStringSet("SENT_ALERTS", newSentAlerts);
+            editor.apply();
+
+            String finalAlerts = alerts.toString().trim();
+            runOnUiThread(() -> alertMessage.setText(finalAlerts.isEmpty() ? getString(R.string.no_alerts) : finalAlerts));
+        });
     }
 
     private int getCurrentUserId() {
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        int userId = prefs.getInt("USER_ID", -1);
-        Log.d("MainActivity", "Retrieved User ID: " + userId);
-        return userId;
+        return prefs.getInt("USER_ID", -1);
     }
 
     @Override
     protected void attachBaseContext(Context newBase) {
         GlobalSettings globalSettings = new GlobalSettings(newBase);
-        String language = globalSettings.getLanguage(); // Récupère la langue sauvegardée
-        Context context = LocaleHelper.wrap(newBase, language); // Applique la langue
+        String language = globalSettings.getLanguage();
+        Context context = LocaleHelper.wrap(newBase, language);
         super.attachBaseContext(context);
+    }
+
+    private void createNotificationChannel() {
+        // Notification channels are required for Android O (API 26) and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Alert Notifications";
+            String description = "Notifications for budget alerts";
+            int importance = android.app.NotificationManager.IMPORTANCE_DEFAULT;
+            android.app.NotificationChannel channel = new android.app.NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+            android.app.NotificationManager notificationManager = getSystemService(android.app.NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.POST_NOTIFICATIONS}, REQUEST_POST_NOTIFICATIONS);
+            }
+        }
+    }
+
+    private void sendNotification(String message) {
+        // Check again if we have permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // Permission not granted, do not send notification
+                return;
+            }
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.logo)
+                .setContentTitle(getString(R.string.section_alerts)) // "Alerts"
+                .setContentText(message)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(NOTIFICATION_ID++, builder.build());
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

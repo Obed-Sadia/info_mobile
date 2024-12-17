@@ -2,12 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
-    tools:context=".MainActivity">
+    android:background="?attr/colorSurface">
 
+    <!-- Message de Bienvenue -->
     <TextView
         android:id="@+id/welcomeMessage"
         android:layout_width="wrap_content"
@@ -19,44 +18,63 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="24dp" />
 
+    <!-- Section Alertes -->
     <TextView
-        android:id="@+id/recentTransactionsTitle"
+        android:id="@+id/sectionTitleAlerts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/recent_transactions_title"
-        android:textStyle="bold"
+        android:text="@string/section_alerts"
         android:textSize="18sp"
-        android:textColor="?attr/colorOnSurface"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/welcomeMessage"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="24dp"
-        android:layout_marginStart="16dp"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recentTransactionsList"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/recentTransactionsTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginStart="16dp" />
 
     <TextView
-        android:id="@+id/noTransactionsMessage"
-        android:layout_width="wrap_content"
+        android:id="@+id/alertMessage"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/no_transactions_message"
-        android:textColor="?attr/colorOnSurfaceVariant"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/recentTransactionsTitle"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/sectionTitleAlerts"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp" />
 
+    <!-- Section Rapport -->
+    <TextView
+        android:id="@+id/sectionTitleRapport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/section_reports"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/alertMessage"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp" />
+
+    <!-- Placeholder pour futurs rapports graphiques -->
+    <TextView
+        android:id="@+id/placeholderReports"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/no_reports_available"
+        android:textColor="?attr/colorOnSurfaceVariant"
+        app:layout_constraintTop_toBottomOf="@id/sectionTitleRapport"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
+
+    <!-- Navigation en bas -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"
@@ -67,6 +85,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:menu="@menu/menu"/>
+        app:menu="@menu/menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

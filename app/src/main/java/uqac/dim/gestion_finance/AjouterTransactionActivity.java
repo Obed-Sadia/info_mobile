@@ -144,23 +144,37 @@ public class AjouterTransactionActivity extends AppCompatActivity {
             }
 
             Executors.newSingleThreadExecutor().execute(() -> {
-                Log.d(TAG, "Saving transaction: " + transactionName + ", BudgetID: " + budgetId);
-
-                UserTransaction transaction = new UserTransaction();
-                transaction.Nom_transaction = transactionName;
-                transaction.Montant = amount;
-                transaction.Date_transaction = selectedDate;
-                transaction.ID_Utilisateur = 1; // Remplacer par l'ID utilisateur actuel
-                transaction.ID_Categorie = budgetId; // ID valide du budget sélectionné
-                transaction.ID_Mode = 0; // Aucun mode de paiement pour l'instant
-                transaction.Recurrence = false;
-
-                db.transactionDao().insert(transaction);
+                // Vérifier si le budget est actif
+                boolean isActive = db.budgetDao().isBudgetActive(budgetId);
 
                 runOnUiThread(() -> {
-                    Toast.makeText(this, R.string.transaction_saved, Toast.LENGTH_SHORT).show();
-                    finish();
+                    if (!isActive) {
+                        showErrorDialog(getString(R.string.error_budget_inactive));
+                    } else {
+                        // Insérer la transaction si le budget est actif
+                        insertTransaction(transactionName, amount, notes, budgetId);
+                    }
                 });
+            });
+        });
+    }
+
+    private void insertTransaction(String name, double amount, String notes, int budgetId) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            UserTransaction transaction = new UserTransaction();
+            transaction.Nom_transaction = name;
+            transaction.Montant = amount;
+            transaction.Date_transaction = selectedDate;
+            transaction.ID_Utilisateur = 1; // Exemple d'utilisateur
+            transaction.ID_Categorie = budgetId;
+            transaction.ID_Mode = 0;
+            transaction.Recurrence = false;
+
+            db.transactionDao().insert(transaction);
+
+            runOnUiThread(() -> {
+                Toast.makeText(this, R.string.transaction_saved, Toast.LENGTH_SHORT).show();
+                finish();
             });
         });
     }

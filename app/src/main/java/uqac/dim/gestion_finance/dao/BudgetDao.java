@@ -33,6 +33,9 @@ public interface BudgetDao {
     @Query("SELECT * FROM Budget")
     List<Budget> getAllBudgets();
 
+    @Query("SELECT actif FROM Budget WHERE id = :budgetId")
+    boolean isBudgetActive(int budgetId);
+
     // Récupérer un budget par ID
     @Query("SELECT * FROM Budget WHERE id = :budgetId LIMIT 1")
     Budget getBudgetById(int budgetId);
