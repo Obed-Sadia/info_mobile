@@ -2,10 +2,10 @@ package uqac.dim.gestion_finance.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,16 +19,23 @@ import uqac.dim.gestion_finance.entities.UserTransaction;
 
 public class UserTransactionAdapter extends RecyclerView.Adapter<UserTransactionAdapter.ViewHolder> {
 
-    private static final String TAG = "UserTransactionAdapter";
-
     private List<UserTransaction> transactions;
     private String currentCurrency;
     private final Context context;
+    private final OnTransactionActionListener listener; // Listener pour les actions
 
-    public UserTransactionAdapter(Context context, List<UserTransaction> transactions) {
+    // Interface pour gérer les actions d'édition et suppression
+    public interface OnTransactionActionListener {
+        void onEditTransaction(UserTransaction transaction);
+        void onDeleteTransaction(UserTransaction transaction);
+    }
+
+    // Constructeur mis à jour
+    public UserTransactionAdapter(Context context, List<UserTransaction> transactions, OnTransactionActionListener listener) {
         this.context = context;
         this.transactions = transactions;
-        updateCurrency(); // Initialiser la devise
+        this.listener = listener;
+        updateCurrency();
     }
 
     @NonNull
@@ -40,22 +47,18 @@ public class UserTransactionAdapter extends RecyclerView.Adapter<UserTransaction
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if (transactions == null || transactions.isEmpty()) {
-            Log.w(TAG, "onBindViewHolder: Transactions list is empty");
-            return;
-        }
-
         UserTransaction transaction = transactions.get(position);
 
-        // Nom de la transaction
-        holder.transactionName.setText(transaction.Nom_transaction);
-
-        // Formatage du montant (deux décimales avec devise)
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
-        holder.transactionAmount.setText(String.format("%s %s", decimalFormat.format(transaction.Montant), currentCurrency));
 
-        // Date de la transaction
+        // Affichage des données
+        holder.transactionName.setText(transaction.Nom_transaction);
+        holder.transactionAmount.setText(String.format("%s %s", decimalFormat.format(transaction.Montant), currentCurrency));
         holder.transactionDate.setText(transaction.Date_transaction);
+
+        // Écouteurs pour les boutons d'action
+        holder.buttonEditTransaction.setOnClickListener(v -> listener.onEditTransaction(transaction));
+        holder.buttonDeleteTransaction.setOnClickListener(v -> listener.onDeleteTransaction(transaction));
     }
 
     @Override
@@ -63,20 +66,14 @@ public class UserTransactionAdapter extends RecyclerView.Adapter<UserTransaction
         return (transactions != null) ? transactions.size() : 0;
     }
 
-    /**
-     * Met à jour la liste des transactions et rafraîchit l'affichage.
-     */
     public void setTransactions(List<UserTransaction> transactions) {
         this.transactions = transactions;
         notifyDataSetChanged();
     }
 
-    /**
-     * Met à jour la devise utilisée pour les montants.
-     */
     public void updateCurrency() {
         SharedPreferences prefs = context.getSharedPreferences("AppSettings", Context.MODE_PRIVATE);
-        currentCurrency = prefs.getString("CURRENCY", "EUR"); // Valeur par défaut : "EUR"
+        currentCurrency = prefs.getString("CURRENCY", "EUR");
         notifyDataSetChanged();
     }
 
@@ -84,12 +81,16 @@ public class UserTransactionAdapter extends RecyclerView.Adapter<UserTransaction
         final TextView transactionName;
         final TextView transactionAmount;
         final TextView transactionDate;
+        final ImageButton buttonEditTransaction;
+        final ImageButton buttonDeleteTransaction;
 
         ViewHolder(View itemView) {
             super(itemView);
             transactionName = itemView.findViewById(R.id.transactionName);
             transactionAmount = itemView.findViewById(R.id.transactionAmount);
             transactionDate = itemView.findViewById(R.id.transactionDate);
+            buttonEditTransaction = itemView.findViewById(R.id.buttonEditTransaction);
+            buttonDeleteTransaction = itemView.findViewById(R.id.buttonDeleteTransaction);
         }
     }
 }

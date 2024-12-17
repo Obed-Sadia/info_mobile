@@ -186,7 +186,20 @@ public class MainActivity extends AppCompatActivity {
             final List<UserTransaction> recentTransactions = userTransactionDao.getRecentTransactions(userId, 3);
             runOnUiThread(() -> {
                 if (recentTransactions != null && !recentTransactions.isEmpty()) {
-                    transactionAdapter = new UserTransactionAdapter(this, recentTransactions);
+                    transactionAdapter = new UserTransactionAdapter(this, recentTransactions, new UserTransactionAdapter.OnTransactionActionListener() {
+                        @Override
+                        public void onEditTransaction(UserTransaction transaction) {
+                            // Rediriger vers EditTransactionActivity
+                            Intent intent = new Intent(MainActivity.this, EditerTransactionActivity.class);
+                            intent.putExtra("transactionId", transaction.ID_Transaction);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onDeleteTransaction(UserTransaction transaction) {
+                            deleteTransaction(transaction);
+                        }
+                    });
                     recentTransactionsList.setAdapter(transactionAdapter);
                     recentTransactionsList.setVisibility(View.VISIBLE);
                     noTransactionsMessage.setVisibility(View.GONE);
@@ -197,6 +210,16 @@ public class MainActivity extends AppCompatActivity {
                     noTransactionsMessage.setVisibility(View.VISIBLE);
                     Log.d(TAG, getString(R.string.no_recent_transactions, userId));
                 }
+            });
+        }).start();
+    }
+
+    private void deleteTransaction(UserTransaction transaction) {
+        new Thread(() -> {
+            userTransactionDao.deleteTransactionById(transaction.ID_Transaction);
+            runOnUiThread(() -> {
+                loadRecentTransactions(); // Recharger les transactions après suppression
+                Log.d(TAG, "deleteTransaction: Transaction supprimée avec succès");
             });
         }).start();
     }

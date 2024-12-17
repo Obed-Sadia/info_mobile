@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import java.util.concurrent.Executors;
 import uqac.dim.gestion_finance.adapters.UserBudgetAdapter;
 import uqac.dim.gestion_finance.database.AppDatabase;
 import uqac.dim.gestion_finance.entities.Budget;
+import uqac.dim.gestion_finance.entities.UserTransaction;
 
 public class BudgetActivity extends AppCompatActivity {
 
@@ -36,7 +38,7 @@ public class BudgetActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_budget);
-        Log.d(getString(R.string.log_tag_budget_activity), getString(R.string.log_activity_started));
+        Log.d(TAG, "BudgetActivity started");
 
         initializeViews();
         setupNavigation();
@@ -66,25 +68,22 @@ public class BudgetActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.navigation_home) {
-                Intent intent = new Intent(BudgetActivity.this, MainActivity.class);
-                startActivity(intent);
-                overridePendingTransition(0, 0); // Désactiver les animations
-                finish(); // Terminer BudgetActivity
+                startActivity(new Intent(BudgetActivity.this, MainActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
                 return true;
             } else if (itemId == R.id.navigation_transaction) {
-                Intent intent = new Intent(BudgetActivity.this, TransactionActivity.class);
-                startActivity(intent);
-                overridePendingTransition(0, 0); // Désactiver les animations
-                finish(); // Terminer BudgetActivity
+                startActivity(new Intent(BudgetActivity.this, TransactionActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
                 return true;
             } else if (itemId == R.id.navigation_budget) {
-                // Déjà sur BudgetActivity, aucune action nécessaire
+                Log.d(TAG, "setupNavigation: Already on BudgetActivity");
                 return true;
             } else if (itemId == R.id.navigation_parametres) {
-                Intent intent = new Intent(BudgetActivity.this, ParametresActivity.class);
-                startActivity(intent);
-                overridePendingTransition(0, 0); // Désactiver les animations
-                finish(); // Terminer BudgetActivity
+                startActivity(new Intent(BudgetActivity.this, ParametresActivity.class));
+                overridePendingTransition(0, 0);
+                finish();
                 return true;
             }
             return false;
@@ -93,9 +92,8 @@ public class BudgetActivity extends AppCompatActivity {
 
     private void setupFab() {
         fabAddBudget.setOnClickListener(v -> {
-            Log.d(getString(R.string.log_tag_budget_activity), getString(R.string.log_fab_clicked));
-            Intent intent = new Intent(BudgetActivity.this, AjouterBudgetActivity.class);
-            startActivity(intent);
+            Log.d(TAG, "FAB clicked to add a new budget");
+            startActivity(new Intent(this, AjouterBudgetActivity.class));
         });
     }
 
@@ -106,38 +104,27 @@ public class BudgetActivity extends AppCompatActivity {
 
         recyclerViewBudgets.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewBudgets.setItemAnimator(new DefaultItemAnimator()); // Animation fluide
-        budgetAdapter = new UserBudgetAdapter(this, null, this::onLastBudgetRemoved, currentCurrency); // Passe la devise
+
+        // Passe les quatre paramètres requis : Context, Budgets (null pour l'initialisation), Listener, Devise
+        budgetAdapter = new UserBudgetAdapter(this, null, this::onLastBudgetRemoved, currentCurrency);
         recyclerViewBudgets.setAdapter(budgetAdapter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        GlobalSettings globalSettings = new GlobalSettings(this);
-        String currentCurrency = globalSettings.getCurrency();
-        Log.d(getString(R.string.log_tag_budget_activity), getString(R.string.log_current_currency, currentCurrency));
-        if (budgetAdapter != null) {
-            budgetAdapter.setCurrency(currentCurrency);
-        }
         loadBudgets();
     }
 
     private void loadBudgets() {
         Executors.newSingleThreadExecutor().execute(() -> {
-            List<Budget> budgets = db.budgetDao().getAllBudgets(); // Charger les budgets depuis la BD
-            GlobalSettings globalSettings = new GlobalSettings(this);
-            String currentCurrency = globalSettings.getCurrency(); // Obtenir la devise mise à jour
+            List<Budget> budgets = db.budgetDao().getAllBudgets();
             runOnUiThread(() -> {
                 if (budgets != null && !budgets.isEmpty()) {
-                    Log.d(getString(R.string.log_tag_budget_activity), getString(R.string.log_budgets_loaded));
-                    textViewNoBudgets.setVisibility(View.GONE); // Masquer le texte "Aucun budget"
-                    recyclerViewBudgets.setVisibility(View.VISIBLE); // Afficher le RecyclerView
-                    if (budgetAdapter != null) {
-                        budgetAdapter.setCurrency(currentCurrency); // Mettre à jour la devise
-                        budgetAdapter.setBudgets(budgets); // Mettre à jour les budgets
-                    }
+                    textViewNoBudgets.setVisibility(View.GONE);
+                    recyclerViewBudgets.setVisibility(View.VISIBLE);
+                    budgetAdapter.setBudgets(budgets);
                 } else {
-                    Log.w(getString(R.string.log_tag_budget_activity), getString(R.string.log_no_budgets_found));
                     showNoBudgetsMessage();
                 }
             });
@@ -145,13 +132,83 @@ public class BudgetActivity extends AppCompatActivity {
     }
 
     public void onLastBudgetRemoved() {
-        Log.d(getString(R.string.log_tag_budget_activity), getString(R.string.log_last_budget_removed));
+        Log.d(TAG, "Last budget removed");
         showNoBudgetsMessage();
     }
 
-    public void showNoBudgetsMessage() {
-        textViewNoBudgets.setVisibility(View.VISIBLE); // Afficher le message
-        recyclerViewBudgets.setVisibility(View.GONE); // Masquer le RecyclerView
+    private void showNoBudgetsMessage() {
+        textViewNoBudgets.setVisibility(View.VISIBLE);
+        recyclerViewBudgets.setVisibility(View.GONE);
     }
 
+    public void attemptDeleteBudget(int budgetId, String budgetName) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            // Récupérer les transactions associées à ce budget
+            List<UserTransaction> transactions = db.transactionDao().getTransactionsByBudgetId(budgetId);
+
+            runOnUiThread(() -> {
+                if (transactions != null && !transactions.isEmpty()) {
+                    // Transactions associées, empêcher la suppression et afficher l'alerte
+                    showTransactionAlertDialog(budgetName, transactions);
+                } else {
+                    // Aucune transaction, confirmer la suppression
+                    confirmBudgetDeletion(budgetId, budgetName);
+                }
+            });
+        });
+    }
+
+    private void showTransactionAlertDialog(String budgetName, List<UserTransaction> transactions) {
+        StringBuilder message = new StringBuilder(getString(R.string.cannot_delete_budget_with_transactions));
+        message.append("\n\n");
+
+        // Construire la liste des transactions
+        for (UserTransaction transaction : transactions) {
+            message.append("- ").append(transaction.Nom_transaction)
+                    .append(" (").append(transaction.Date_transaction).append(")\n");
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.cannot_delete_budget, budgetName))
+                .setMessage(message.toString())
+                .setPositiveButton(getString(R.string.ok), null) // Fermer l'alerte
+                .show();
+    }
+
+    private void confirmBudgetDeletion(int budgetId, String budgetName) {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.confirm_delete_budget, budgetName))
+                .setMessage(R.string.delete_budget_confirmation)
+                .setPositiveButton(R.string.delete, (dialog, which) -> {
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        try {
+                            db.budgetDao().deleteBudgetById(budgetId);
+                            runOnUiThread(() -> {
+                                Log.d(TAG, "Budget supprimé avec succès : " + budgetName);
+                                refreshBudgetList();
+                            });
+                        } catch (Exception e) {
+                            Log.e(TAG, "Erreur lors de la suppression du budget", e);
+                            runOnUiThread(() -> {
+                                showDeletionErrorDialog();
+                            });
+                        }
+                    });
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
+    private void showDeletionErrorDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.error_title)
+                .setMessage(R.string.cannot_delete_budget_due_to_transactions)
+                .setPositiveButton(R.string.ok, null)
+                .show();
+    }
+
+    private void refreshBudgetList() {
+        // Méthode pour rafraîchir la liste des budgets après suppression
+        loadBudgets();
+    }
 }

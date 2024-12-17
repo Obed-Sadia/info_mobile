@@ -25,6 +25,10 @@ public interface BudgetDao {
     @Delete
     void delete(Budget budget);
 
+    // Supprimer un budget par ID
+    @Query("DELETE FROM Budget WHERE id = :budgetId")
+    void deleteBudgetById(int budgetId);
+
     // Récupérer tous les budgets
     @Query("SELECT * FROM Budget")
     List<Budget> getAllBudgets();
@@ -41,6 +45,11 @@ public interface BudgetDao {
     @Query("DELETE FROM Budget")
     void deleteAllBudgets();
 
-    @Query("SELECT * FROM budget WHERE nom = :nom LIMIT 1")
+    // Récupérer un budget par son nom
+    @Query("SELECT * FROM Budget WHERE nom = :nom LIMIT 1")
     Budget getBudgetByName(String nom);
+
+    // Vérifier si un budget est lié à des transactions (retourne true s'il existe des transactions liées)
+    @Query("SELECT COUNT(*) > 0 FROM UserTransaction WHERE ID_Categorie = :budgetId")
+    boolean hasLinkedTransactions(int budgetId);
 }

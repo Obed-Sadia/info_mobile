@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+import uqac.dim.gestion_finance.BudgetActivity;
 import uqac.dim.gestion_finance.EditerBudgetActivity;
 import uqac.dim.gestion_finance.R;
 import uqac.dim.gestion_finance.database.AppDatabase;
@@ -120,13 +121,8 @@ public class UserBudgetAdapter extends RecyclerView.Adapter<UserBudgetAdapter.Bu
 
         // Gestion du bouton Supprimer
         holder.buttonDeleteBudget.setOnClickListener(v -> {
-            Log.d("UserBudgetAdapter", "Supprimer le budget : " + budget.nom);
-            Executors.newSingleThreadExecutor().execute(() -> {
-                db.budgetDao().delete(budget); // Supprime le budget dans la base de données
-                ((Activity) context).runOnUiThread(() -> {
-                    removeBudgetAtPosition(position); // Supprime avec animation
-                });
-            });
+            if (context instanceof BudgetActivity) {
+                ((BudgetActivity) context).attemptDeleteBudget(budget.id, budget.nom);            }
         });
     }
 

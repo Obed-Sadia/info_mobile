@@ -1,27 +1,51 @@
 package uqac.dim.gestion_finance.dao;
 
-
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
-import uqac.dim.gestion_finance.entities.UserTransaction; // Mettez à jour l'importation
+import androidx.room.Delete;
+import androidx.room.Update;
 
 import java.util.List;
 
+import uqac.dim.gestion_finance.entities.UserTransaction;
+
 @Dao
-public interface UserTransactionDao { // Mettez à jour le nom de l'interface
+public interface UserTransactionDao {
+
+    // Insérer une nouvelle transaction
     @Insert
     void insert(UserTransaction transaction);
 
-    @Query("SELECT * FROM UserTransaction") // Mettez à jour le nom de la table
+    // Mettre à jour une transaction existante
+    @Update
+    void update(UserTransaction transaction);
+
+    // Supprimer une transaction par ID
+    @Query("DELETE FROM UserTransaction WHERE ID_Transaction = :transactionId")
+    void deleteTransactionById(int transactionId);
+
+    // Récupérer toutes les transactions
+    @Query("SELECT * FROM UserTransaction")
     List<UserTransaction> getAll();
 
-    @Query("SELECT * FROM UserTransaction WHERE ID_Transaction = :id") // Mettez à jour le nom de la table
+    // Récupérer une transaction par ID
+    @Query("SELECT * FROM UserTransaction WHERE ID_Transaction = :id")
     UserTransaction getById(int id);
 
-    @Query("DELETE FROM UserTransaction") // Mettez à jour le nom de la table
+    // Récupérer les transactions par budget (ID_Categorie)
+    @Query("SELECT * FROM UserTransaction WHERE ID_Categorie = :budgetId")
+    List<UserTransaction> getTransactionsByBudgetId(int budgetId);
+
+    // Supprimer toutes les transactions
+    @Query("DELETE FROM UserTransaction")
     void deleteAll();
 
-    @Query("SELECT * FROM Usertransaction WHERE ID_Utilisateur = :userId ORDER BY Date_transaction DESC LIMIT :limit")
+    // Supprimer les transactions par budget
+    @Query("DELETE FROM UserTransaction WHERE ID_Categorie = :budgetId")
+    void deleteTransactionsByBudgetId(int budgetId);
+
+    // Récupérer les transactions récentes pour un utilisateur
+    @Query("SELECT * FROM UserTransaction WHERE ID_Utilisateur = :userId ORDER BY Date_transaction DESC LIMIT :limit")
     List<UserTransaction> getRecentTransactions(int userId, int limit);
 }

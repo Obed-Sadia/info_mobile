@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?attr/colorSurface">
 
-    <!-- Toolbar avec flèche précédent -->
+    <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="0dp"
@@ -16,5 +16,144 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Nom de la transaction -->
+    <TextView
+        android:id="@+id/textViewTransactionName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/transaction_name"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp" />
+
+    <EditText
+        android:id="@+id/editTextTransactionName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/transaction_name_hint"
+        app:layout_constraintTop_toBottomOf="@id/textViewTransactionName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp" />
+
+    <!-- Montant -->
+    <TextView
+        android:id="@+id/textViewAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/transaction_amount"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/editTextTransactionName"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp" />
+
+    <EditText
+        android:id="@+id/editTextTransactionAmount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/transaction_amount_hint"
+        android:inputType="numberDecimal"
+        app:layout_constraintTop_toBottomOf="@id/textViewAmount"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp" />
+
+    <!-- Budget associé -->
+    <TextView
+        android:id="@+id/textViewBudget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/associated_budget"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/editTextTransactionAmount"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp" />
+
+    <Spinner
+        android:id="@+id/spinnerBudget"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/textViewBudget"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp" />
+
+    <!-- Date -->
+    <TextView
+        android:id="@+id/textViewDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/transaction_date"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/spinnerBudget"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/buttonSelectDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/select_date"
+        app:layout_constraintTop_toBottomOf="@id/textViewDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp" />
+
+    <!-- Notes -->
+    <TextView
+        android:id="@+id/textViewNotes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/transaction_notes"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/buttonSelectDate"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp" />
+
+    <EditText
+        android:id="@+id/editTextNotes"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/transaction_notes_hint"
+        android:inputType="textMultiLine"
+        app:layout_constraintTop_toBottomOf="@id/textViewNotes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp" />
+
+    <!-- Boutons pour sauvegarder -->
+    <Button
+        android:id="@+id/buttonSaveTransaction"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/save_transaction"
+        app:layout_constraintTop_toBottomOf="@id/editTextNotes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

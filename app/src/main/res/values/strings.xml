@@ -93,12 +93,43 @@
     <string name="edit_budget">Modifier le budget</string>
     <string name="update_budget">Mettre à jour</string>
 
+    <string name="cannot_delete_budget">Impossible de supprimer le budget : %1$s</string>
+    <string name="cannot_delete_budget_with_transactions">Ce budget possède des transactions associées. Veuillez les supprimer avant de continuer :</string>
+    <string name="confirm_delete_budget">Supprimer le budget : %1$s ?</string>
+    <string name="delete_budget_confirmation">Êtes-vous sûr de vouloir supprimer ce budget ? Cette action est irréversible.</string>
+    <string name="budget_deleted">Budget supprimé avec succès.</string>
+    <string name="delete">Supprimer</string>
+    <string name="cancel">Annuler</string>
+
+    <string name="error_invalid_budget">Budget sélectionné invalide.</string>
+    <string name="error_no_budgets_available">Aucun budget disponible. Créez d\'abord un budget.</string>
+
+    <string name="cannot_delete_budget_due_to_transactions">Impossible de supprimer ce budget car des transactions lui sont associées.</string>
+
     <!-- Transactions -->
     <string name="no_recent_transactions">Aucune transaction récente trouvée pour l\'utilisateur %1$d</string>
     <string name="no_transactions">Aucune transaction récente trouvée.</string>
     <string name="no_transactions_message">Pas de transactions récentes</string>
     <string name="recent_transactions_title">Dernières transactions</string>
     <string name="transactions_loaded">Chargement de %1$d transactions pour l\'utilisateur %2$d</string>
+
+    <!-- Ajouter Transaction -->
+    <string name="transaction_name">Nom de la transaction</string>
+    <string name="transaction_name_hint">Entrez le nom de la transaction</string>
+    <string name="transaction_amount">Montant</string>
+    <string name="transaction_amount_hint">Entrez le montant</string>
+    <string name="associated_budget">Budget associé</string>
+    <string name="transaction_date">Date</string>
+    <string name="select_date">Sélectionner une date</string>
+    <string name="transaction_notes">Notes</string>
+    <string name="transaction_notes_hint">Ajoutez des notes (facultatif)</string>
+    <string name="save_transaction">Sauvegarder</string>
+    <string name="transaction_saved">Transaction sauvegardée avec succès</string>
+
+    <!-- Éditer une transaction -->
+    <string name="edit_transaction">Modifier une transaction</string>
+    <string name="transaction_updated">Transaction mise à jour avec succès</string>
+    <string name="error_invalid_transaction">Transaction invalide.</string>
 
     <!-- Connexion -->
     <string name="connexion_button">Connexion</string>

@@ -16,7 +16,6 @@ import androidx.appcompat.widget.Toolbar;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executors;
@@ -25,9 +24,9 @@ import uqac.dim.gestion_finance.database.AppDatabase;
 import uqac.dim.gestion_finance.entities.Budget;
 import uqac.dim.gestion_finance.entities.UserTransaction;
 
-public class AjouterTransactionActivity extends AppCompatActivity {
+public class EditerTransactionActivity extends AppCompatActivity {
 
-    private static final String TAG = "AjouterTransactionActivity";
+    private static final String TAG = "EditerTransactionActivity";
 
     private EditText editTextTransactionName, editTextTransactionAmount, editTextNotes;
     private Spinner spinnerBudget;
@@ -35,7 +34,7 @@ public class AjouterTransactionActivity extends AppCompatActivity {
 
     private AppDatabase db;
     private String selectedDate = "";
-    private final HashMap<String, Integer> budgetIdMap = new HashMap<>(); // Map pour stocker nom-budget -> id-budget
+    private int transactionId; // ID de la transaction à modifier
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +46,15 @@ public class AjouterTransactionActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(R.string.add_transaction);
+            getSupportActionBar().setTitle(R.string.edit_transaction);
+        }
+
+        // Récupérer l'ID de la transaction
+        transactionId = getIntent().getIntExtra("transactionId", -1);
+        if (transactionId == -1) {
+            Toast.makeText(this, "ID transaction invalide", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
 
         // Initialiser les vues
@@ -58,6 +65,9 @@ public class AjouterTransactionActivity extends AppCompatActivity {
 
         // Charger les budgets dynamiques
         loadBudgets();
+
+        // Charger les détails de la transaction
+        loadTransactionDetails();
 
         // Configurer le bouton de sélection de date
         setupDateButton();
@@ -77,25 +87,39 @@ public class AjouterTransactionActivity extends AppCompatActivity {
 
     private void loadBudgets() {
         Executors.newSingleThreadExecutor().execute(() -> {
-            List<Budget> budgets = db.budgetDao().getAllBudgets(); // Charger les budgets depuis la base de données
+            List<Budget> budgets = db.budgetDao().getAllBudgets();
             List<String> budgetNames = new ArrayList<>();
-            budgetIdMap.clear();
-
             for (Budget budget : budgets) {
                 budgetNames.add(budget.nom);
-                budgetIdMap.put(budget.nom, budget.id); // Associer le nom au budget ID
             }
 
             runOnUiThread(() -> {
-                if (!budgetNames.isEmpty()) {
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, budgetNames);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    spinnerBudget.setAdapter(adapter);
-                } else {
-                    showErrorDialog(getString(R.string.error_no_budgets_available));
-                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, budgetNames);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerBudget.setAdapter(adapter);
             });
         });
+    }
+
+    private void loadTransactionDetails() {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            UserTransaction transaction = db.transactionDao().getById(transactionId);
+            if (transaction != null) {
+                runOnUiThread(() -> populateFields(transaction));
+            } else {
+                Log.e(TAG, "Transaction introuvable");
+                finish();
+            }
+        });
+    }
+
+    private void populateFields(UserTransaction transaction) {
+        editTextTransactionName.setText(transaction.Nom_transaction);
+        editTextTransactionAmount.setText(String.valueOf(transaction.Montant));
+        editTextNotes.setText(""); // Notes non stockées dans cette version
+
+        selectedDate = transaction.Date_transaction;
+        buttonSelectDate.setText(selectedDate);
     }
 
     private void setupDateButton() {
@@ -125,37 +149,30 @@ public class AjouterTransactionActivity extends AppCompatActivity {
         buttonSaveTransaction.setOnClickListener(v -> {
             String transactionName = editTextTransactionName.getText().toString().trim();
             String amountStr = editTextTransactionAmount.getText().toString().trim();
-            String notes = editTextNotes.getText().toString().trim();
-            String selectedBudget = spinnerBudget.getSelectedItem() != null ? spinnerBudget.getSelectedItem().toString() : "";
 
-            if (transactionName.isEmpty() || amountStr.isEmpty() || selectedBudget.isEmpty() || selectedDate.isEmpty()) {
+            if (transactionName.isEmpty() || amountStr.isEmpty() || selectedDate.isEmpty()) {
                 showErrorDialog(getString(R.string.error_fill_all_fields));
                 return;
             }
 
-            if (!validateAmount(amountStr)) return;
-
-            double amount = Double.parseDouble(amountStr);
-            int budgetId = budgetIdMap.getOrDefault(selectedBudget, -1);
-
-            if (budgetId == -1) {
-                showErrorDialog(getString(R.string.error_invalid_budget));
+            double amount;
+            try {
+                amount = Double.parseDouble(amountStr);
+                if (amount <= 0) throw new NumberFormatException();
+            } catch (NumberFormatException e) {
+                showErrorDialog(getString(R.string.error_invalid_amount));
                 return;
             }
 
+            // Mettre à jour la transaction
             Executors.newSingleThreadExecutor().execute(() -> {
-                Log.d(TAG, "Saving transaction: " + transactionName + ", BudgetID: " + budgetId);
-
                 UserTransaction transaction = new UserTransaction();
+                transaction.ID_Transaction = transactionId;
                 transaction.Nom_transaction = transactionName;
                 transaction.Montant = amount;
                 transaction.Date_transaction = selectedDate;
-                transaction.ID_Utilisateur = 1; // Remplacer par l'ID utilisateur actuel
-                transaction.ID_Categorie = budgetId; // ID valide du budget sélectionné
-                transaction.ID_Mode = 0; // Aucun mode de paiement pour l'instant
-                transaction.Recurrence = false;
 
-                db.transactionDao().insert(transaction);
+                db.transactionDao().update(transaction);
 
                 runOnUiThread(() -> {
                     Toast.makeText(this, R.string.transaction_saved, Toast.LENGTH_SHORT).show();
@@ -163,24 +180,6 @@ public class AjouterTransactionActivity extends AppCompatActivity {
                 });
             });
         });
-    }
-
-    private boolean validateAmount(String amountStr) {
-        try {
-            double amount = Double.parseDouble(amountStr);
-            if (amount <= 0) {
-                showErrorDialog(getString(R.string.error_invalid_amount));
-                return false;
-            }
-            if (!amountStr.matches("^\\d{1,9}(\\.\\d{1,2})?$")) {
-                showErrorDialog(getString(R.string.error_invalid_amount));
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            showErrorDialog(getString(R.string.error_invalid_amount));
-            return false;
-        }
-        return true;
     }
 
     private void showErrorDialog(String message) {

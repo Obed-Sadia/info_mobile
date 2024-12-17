@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -111,9 +112,32 @@ public class TransactionActivity extends AppCompatActivity {
 
     private void setupRecyclerView() {
         recyclerViewTransactions.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewTransactions.setItemAnimator(new DefaultItemAnimator()); // Animation fluide
-        transactionAdapter = new UserTransactionAdapter(this, null); // Initialise l'adaptateur
+        recyclerViewTransactions.setItemAnimator(new DefaultItemAnimator());
+        transactionAdapter = new UserTransactionAdapter(this, null, new UserTransactionAdapter.OnTransactionActionListener() {
+            @Override
+            public void onEditTransaction(UserTransaction transaction) {
+                // Redirection vers EditTransactionActivity
+                Intent intent = new Intent(TransactionActivity.this, EditerTransactionActivity.class);
+                intent.putExtra("transactionId", transaction.ID_Transaction);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onDeleteTransaction(UserTransaction transaction) {
+                deleteTransaction(transaction);
+            }
+        });
         recyclerViewTransactions.setAdapter(transactionAdapter);
+    }
+
+    private void deleteTransaction(UserTransaction transaction) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            db.transactionDao().deleteTransactionById(transaction.ID_Transaction);
+            runOnUiThread(() -> {
+                loadTransactions(); // Rafraîchir les données après suppression
+                Log.d(TAG, "deleteTransaction: Transaction deleted successfully");
+            });
+        });
     }
 
     @Override

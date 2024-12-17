@@ -14,11 +14,11 @@
         android:textStyle="bold"
         android:textSize="16sp"
         android:textColor="@color/primary"
+        android:ellipsize="end"
+        android:maxLines="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/transactionAmount"
-        android:ellipsize="end"
-        android:maxLines="1" />
+        app:layout_constraintEnd_toStartOf="@id/transactionAmount" />
 
     <!-- Montant -->
     <TextView
@@ -38,8 +38,40 @@
         android:layout_height="wrap_content"
         android:textSize="14sp"
         android:textColor="@color/secondary"
+        android:layout_marginTop="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/transactionName"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Conteneur des boutons -->
+    <LinearLayout
+        android:id="@+id/iconContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        app:layout_constraintTop_toBottomOf="@id/transactionAmount"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="4dp" />
+        android:layout_marginTop="2dp">
+
+        <!-- Bouton d'édition -->
+        <ImageButton
+            android:id="@+id/buttonEditTransaction"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription=""
+            android:src="@drawable/ic_edit"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_marginEnd="8dp" />
+
+        <!-- Bouton de suppression -->
+        <ImageButton
+            android:id="@+id/buttonDeleteTransaction"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:contentDescription=""
+            android:src="@drawable/ic_delete"
+            android:background="?attr/selectableItemBackgroundBorderless" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
