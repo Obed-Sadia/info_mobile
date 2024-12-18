@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +19,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.BubbleChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.charts.RadarChart;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.HashSet;
@@ -31,6 +37,7 @@ import uqac.dim.gestion_finance.dao.UtilisateurDao;
 import uqac.dim.gestion_finance.database.AppDatabase;
 import uqac.dim.gestion_finance.entities.Budget;
 import uqac.dim.gestion_finance.entities.Utilisateur;
+import uqac.dim.gestion_finance.Util;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,6 +57,11 @@ public class MainActivity extends AppCompatActivity {
     private BroadcastReceiver settingsReceiver;
     private static final int REQUEST_POST_NOTIFICATIONS = 1;
 
+    private GraphiqueActivity graphiqueActivity;
+    private PieChart pieChart;
+    private BarChart barChart;
+    private RadarChart radarChart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +76,32 @@ public class MainActivity extends AppCompatActivity {
         loadRecentAlerts();
         setupNavigation();
         initializeSettingsReceiver();
+
+        // Initialiser GraphiqueActivity avec la base de données
+        graphiqueActivity = new GraphiqueActivity(db.getOpenHelper().getWritableDatabase());
+
+        // Initialiser et configurer les graphiques
+        PieChart pieChart = findViewById(R.id.pieChartExpenses);
+        BarChart barChart = findViewById(R.id.barChartBudgetsVsExpenses);
+
+        // Récupérer l'identifiant de l'utilisateur
+        int userId = getCurrentUserId(); // Fonction déjà définie
+
+        // Passer l'identifiant de l'utilisateur aux méthodes de configuration du graphique
+        graphiqueActivity.setupPieChart(pieChart, userId);
+
+
+        // Passer l'identifiant de l'utilisateur et les dates du mois précédent à la méthode de configuration du graphique en barres
+        graphiqueActivity.setupBarChart(barChart, userId);
+
+
+
     }
+    private int getLastUserId() {
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        return prefs.getInt("USER_ID", -1);
+    }
+
 
     private void initializeViews() {
         welcomeMessage = findViewById(R.id.welcomeMessage);

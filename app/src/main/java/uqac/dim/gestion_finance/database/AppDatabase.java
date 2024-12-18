@@ -30,7 +30,7 @@ import uqac.dim.gestion_finance.entities.SessionToken;
         Budget.class,
         Parametres.class,
         SessionToken.class},
-        version = 3, // Version mise à jour pour refléter les changements
+        version = 2, // Version mise à jour pour refléter les changements
         exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 

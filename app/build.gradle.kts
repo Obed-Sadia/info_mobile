@@ -43,7 +43,9 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     annotationProcessor(libs.room.compiler)
-
-
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
 }
+
+
+
