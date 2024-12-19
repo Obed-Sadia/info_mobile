@@ -82,18 +82,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialiser et configurer les graphiques
         PieChart pieChart = findViewById(R.id.pieChartExpenses);
-        BarChart barChart = findViewById(R.id.barChartBudgetsVsExpenses);
+
 
         // Récupérer l'identifiant de l'utilisateur
         int userId = getCurrentUserId(); // Fonction déjà définie
 
         // Passer l'identifiant de l'utilisateur aux méthodes de configuration du graphique
-        graphiqueActivity.setupPieChart(pieChart, userId);
-
-
-        // Passer l'identifiant de l'utilisateur et les dates du mois précédent à la méthode de configuration du graphique en barres
-        graphiqueActivity.setupBarChart(barChart, userId);
-
+        graphiqueActivity.setupPieChart(pieChart);
 
 
     }

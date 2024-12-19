@@ -1,7 +1,7 @@
 <resources>
 
     <string name="section_bar_chart">Diagramme en barres : Budgets vs Dépenses</string>
-    <string name="section_pie_chart">Graphique circulaire : Dépenses par catégorie</string>
+    <string name="section_pie_chart">Répartition Budgets</string>
 
 
     <!-- Liste des budgets -->

@@ -1,6 +1,7 @@
 package uqac.dim.gestion_finance;
 
 import android.app.DatePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -160,12 +161,13 @@ public class AjouterTransactionActivity extends AppCompatActivity {
     }
 
     private void insertTransaction(String name, double amount, String notes, int budgetId) {
+        int id = getLastUserId();
         Executors.newSingleThreadExecutor().execute(() -> {
             UserTransaction transaction = new UserTransaction();
             transaction.Nom_transaction = name;
             transaction.Montant = amount;
             transaction.Date_transaction = selectedDate;
-            transaction.ID_Utilisateur = 1; // Exemple d'utilisateur
+            transaction.ID_Utilisateur = id; // Exemple d'utilisateur
             transaction.ID_Categorie = budgetId;
             transaction.ID_Mode = 0;
             transaction.Recurrence = false;
@@ -177,6 +179,11 @@ public class AjouterTransactionActivity extends AppCompatActivity {
                 finish();
             });
         });
+    }
+
+    private int getLastUserId() {
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        return prefs.getInt("USER_ID", -1);
     }
 
     private boolean validateAmount(String amountStr) {
